@@ -1,0 +1,147 @@
+package com.mission2019.dreamcricket.dreamcricket;
+
+import android.util.Log;
+
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
+
+public class SingletonServer {
+    private String TAG = SingletonServer.class.getSimpleName();
+    private static SingletonServer instance = null;
+    private Socket mSocket;
+    private ServerEventListener mEventListener;
+
+    public interface ServerEventListener {
+        void onServerEvent(Object... args);
+    }
+
+    private void deliverEvent(String eventSchedule, String data) {
+        if (mEventListener != null) {
+            mEventListener.onServerEvent(eventSchedule, data);
+        }
+    }
+
+    public static synchronized SingletonServer getInstance() {
+        if (instance == null) {
+            instance = new SingletonServer();
+        }
+        return instance;
+    }
+
+    private SingletonServer() {
+        try {
+            mSocket = IO.socket("http://192.168.0.105:5678");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                deliverEvent(LocalInterface.EVENT_CONNECTION_SUCCESS, null);
+            }
+        });
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                deliverEvent(LocalInterface.EVENT_CONNECTION_ERROR, null);
+            }
+        });
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                deliverEvent(LocalInterface.EVENT_CONNECTION_TIMEOUT, null);
+            }
+        });
+        mSocket.on("response", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject responseJson = (JSONObject) args[0];
+                Log.e(TAG, responseJson.toString());
+                try {
+                    String responseType = responseJson.getString("type");
+                    String responseData = responseJson.getString("data");
+                    switch (responseType) {
+                        case RemoteInterface.RESP_SCHEDULE: {
+                            deliverEvent(LocalInterface.EVENT_SCHEDULE, responseData);
+                            break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void query(String type, String data) {
+        JSONObject query_json = new JSONObject();
+        try {
+            query_json.put("type", type);
+            query_json.put("data", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.e(TAG, "Sending Query to Server " + query_json.toString());
+        mSocket.emit("query", query_json.toString());
+    }
+
+    public void connect(ServerEventListener listener) {
+        mEventListener = listener;
+        mSocket.connect();
+    }
+
+    public void disconnect() {
+        mEventListener = null;
+        mSocket.disconnect();
+    }
+
+    public void getSchedule() {
+        query(RemoteInterface.QUERY_SCHEDULE, "");
+    }
+
+    //    private void processScheduleJsonArray(JSONArray seriesJsonArray) {
+//        for (int seriesIndex = 0; seriesIndex < seriesJsonArray.length(); seriesIndex++) {
+//            try {
+//                JSONObject seriesJsonObject = seriesJsonArray.getJSONObject(seriesIndex);
+//                Log.e(TAG, "Series: " + seriesJsonObject.getString("series_title"));
+//                JSONArray matchJsonArray = seriesJsonObject.getJSONArray("series_data");
+//                for (int matchIndex = 0; matchIndex < matchJsonArray.length(); matchIndex++) {
+//                    JSONObject matchJsonObject = matchJsonArray.getJSONObject(matchIndex);
+//                    Log.e(TAG, "Match: " +
+//                            " title-"+matchJsonObject.getString("match_title") +
+//                            " format-"+matchJsonObject.getString("match_format")+
+//                            " time-"+matchJsonObject.getString("match_time")+
+//                            " gender-"+matchJsonObject.getString("match_gender")+
+//                            " venue-"+matchJsonObject.getString("match_venue")
+//                    );
+//                    JSONArray teamJsonArray = matchJsonObject.getJSONArray("match_teams");
+//                    for (int teamIndex = 0; teamIndex < teamJsonArray.length(); teamIndex++) {
+//                        JSONObject teamJsonObject = teamJsonArray.getJSONObject(teamIndex);
+//                        Log.e(TAG, "Team: " + teamJsonObject.getString("team_name"));
+//                        JSONArray playerJsonArray = teamJsonObject.getJSONArray("team_squad");
+//                        for (int playerIndex = 0; playerIndex < playerJsonArray.length(); playerIndex++) {
+//                            JSONObject playerJsonObject = playerJsonArray.getJSONObject(playerIndex);
+//                            Log.e(TAG, "Player: " +
+//                                    " name-"+playerJsonObject.getString("player_name")+
+//                                    " role-"+playerJsonObject.getString("player_role")+
+//                                    " batting_style-"+playerJsonObject.getString("player_batting_style")+
+//                                    " bowling_style-"+playerJsonObject.getString("player_bowling_style")+
+//                                    " gender-"+playerJsonObject.getString("player_gender")
+//                            );
+//                        }
+//                    }
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+}
