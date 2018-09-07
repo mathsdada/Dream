@@ -80,10 +80,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView mVenueTextView, mTimeTextView;
         MatchViewHolder(View matchView) {
             super(matchView);
-//            mTeamATextView = matchView.findViewById(R.id.team_A_tv);
-//            mTeamBTextView = matchView.findViewById(R.id.team_B_tv);
-//            mVenueTextView = matchView.findViewById(R.id.venue_tv);
-//            mTimeTextView = matchView.findViewById(R.id.time_tv);
+            mTeamATextView = matchView.findViewById(R.id.team_a_tv);
+            mTeamBTextView = matchView.findViewById(R.id.team_b_tv);
+            mVenueTextView = matchView.findViewById(R.id.title_venue_tv);
+            mTimeTextView = matchView.findViewById(R.id.time_tv);
         }
         void bindViews(JSONObject matchJsonObject) {
             try {
