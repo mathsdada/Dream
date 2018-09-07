@@ -14,12 +14,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<Object> mScheduleDataset;
+    private ArrayList<Object> mScheduleDataSet;
     private static final int ITEM_TYPE_SERIES = 0;
     private static final int ITEM_TYPE_MATCH = 1;
 
-    public ScheduleRecyclerViewAdapter(ArrayList<Object> mDataset) {
-        this.mScheduleDataset = mDataset;
+    public ScheduleRecyclerViewAdapter(ArrayList<Object> scheduleDataSet) {
+        this.mScheduleDataSet = scheduleDataSet;
     }
 
     @NonNull
@@ -40,17 +40,17 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         if (viewType == ITEM_TYPE_SERIES) {
-            ((SeriesViewHolder)holder).bindViews((String) mScheduleDataset.get(position));
+            ((SeriesViewHolder)holder).bindViews((String) mScheduleDataSet.get(position));
         } else if (viewType == ITEM_TYPE_MATCH) {
-            ((MatchViewHolder)holder).bindViews((JSONObject) mScheduleDataset.get(position));
+            ((MatchViewHolder)holder).bindViews((JSONObject) mScheduleDataSet.get(position));
         }
     }
     
     @Override
     public int getItemViewType(int position) {
-        if(mScheduleDataset.get(position) instanceof String) {
+        if(mScheduleDataSet.get(position) instanceof String) {
             return ITEM_TYPE_SERIES;
-        } else if (mScheduleDataset.get(position) instanceof JSONObject) {
+        } else if (mScheduleDataSet.get(position) instanceof JSONObject) {
             return ITEM_TYPE_MATCH;
         }
         return super.getItemViewType(position);
@@ -58,7 +58,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public int getItemCount() {
-        return mScheduleDataset.size();
+        return mScheduleDataSet.size();
     }
 
     private class SeriesViewHolder extends RecyclerView.ViewHolder {
@@ -80,10 +80,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView mVenueTextView, mTimeTextView;
         MatchViewHolder(View matchView) {
             super(matchView);
-            mTeamATextView = matchView.findViewById(R.id.team_A_tv);
-            mTeamBTextView = matchView.findViewById(R.id.team_B_tv);
-            mVenueTextView = matchView.findViewById(R.id.venue_tv);
-            mTimeTextView = matchView.findViewById(R.id.time_tv);
+//            mTeamATextView = matchView.findViewById(R.id.team_A_tv);
+//            mTeamBTextView = matchView.findViewById(R.id.team_B_tv);
+//            mVenueTextView = matchView.findViewById(R.id.venue_tv);
+//            mTimeTextView = matchView.findViewById(R.id.time_tv);
         }
         void bindViews(JSONObject matchJsonObject) {
             try {

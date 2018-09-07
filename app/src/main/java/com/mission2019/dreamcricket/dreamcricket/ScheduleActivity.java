@@ -3,9 +3,9 @@ package com.mission2019.dreamcricket.dreamcricket;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,7 +18,8 @@ import java.util.ArrayList;
 public class ScheduleActivity extends AppCompatActivity implements SingletonServer.ServerEventListener {
     public static final String TAG = ScheduleActivity.class.getSimpleName();
     private JSONArray mSeriesJsonArray;
-    private ArrayList<Object> mScheduleAdapterDataset;
+    private ArrayList<Object> mScheduleAdapterDataSet;
+    private ScheduleRecyclerViewAdapter mScheduleRecyclerViewAdapter;
     private SingletonServer mServer;
 
     @Override
@@ -29,9 +30,12 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         setSupportActionBar(toolbar);
 
         mServer = SingletonServer.getInstance();
-        mScheduleAdapterDataset = new ArrayList<>();
+        mScheduleAdapterDataSet = new ArrayList<>();
         RecyclerView recyclerViewSchedule = findViewById(R.id.recyclerview_schedule);
         recyclerViewSchedule.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+        mScheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter(mScheduleAdapterDataSet);
+        recyclerViewSchedule.setAdapter(mScheduleRecyclerViewAdapter);
+        recyclerViewSchedule.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -83,25 +87,27 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
             }
             case LocalInterface.EVENT_SCHEDULE: {
                 mSeriesJsonArray = (JSONArray) args[1];
-                updateScheduleAdapterDataset(mSeriesJsonArray);
+                updateScheduleAdapterDataSet(mSeriesJsonArray);
                 break;
             }
         }
     }
 
-    private void updateScheduleAdapterDataset(JSONArray seriesJsonArray) {
+    private void updateScheduleAdapterDataSet(JSONArray seriesJsonArray) {
+        mScheduleAdapterDataSet.clear();
         for (int seriesIndex = 0; seriesIndex < seriesJsonArray.length(); seriesIndex++) {
             try {
                 JSONObject seriesJsonObject = seriesJsonArray.getJSONObject(seriesIndex);
-                mScheduleAdapterDataset.add(seriesJsonObject.getString("series_title"));
+                mScheduleAdapterDataSet.add(seriesJsonObject.getString("series_title"));
                 JSONArray matchJsonArray = seriesJsonObject.getJSONArray("series_data");
                 for (int matchIndex = 0; matchIndex < matchJsonArray.length(); matchIndex++) {
                     JSONObject matchJsonObject = matchJsonArray.getJSONObject(matchIndex);
-                    mScheduleAdapterDataset.add(matchJsonObject);
+                    mScheduleAdapterDataSet.add(matchJsonObject);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        mScheduleRecyclerViewAdapter.notifyDataSetChanged();
     }
 }
