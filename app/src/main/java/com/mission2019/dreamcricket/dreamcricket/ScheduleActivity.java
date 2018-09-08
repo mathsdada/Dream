@@ -73,7 +73,7 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     }
 
     @Override
-    public void onServerEvent(Object... args) {
+    public void onServerEvent(final Object... args) {
         String eventType = (String) args[0];
         switch (eventType) {
             case LocalInterface.EVENT_CONNECTION_SUCCESS: {
@@ -86,8 +86,13 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
                 break;
             }
             case LocalInterface.EVENT_SCHEDULE: {
-                mSeriesJsonArray = (JSONArray) args[1];
-                updateScheduleAdapterDataSet(mSeriesJsonArray);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSeriesJsonArray = (JSONArray) args[1];
+                        updateScheduleAdapterDataSet(mSeriesJsonArray);
+                    }
+                });
                 break;
             }
         }

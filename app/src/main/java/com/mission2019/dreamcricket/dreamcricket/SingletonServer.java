@@ -22,7 +22,7 @@ public class SingletonServer {
         void onServerEvent(Object... args);
     }
 
-    private void deliverEvent(String eventSchedule, String data) {
+    private void deliverEvent(String eventSchedule, Object data) {
         if (mEventListener != null) {
             mEventListener.onServerEvent(eventSchedule, data);
         }
@@ -37,7 +37,7 @@ public class SingletonServer {
 
     private SingletonServer() {
         try {
-            mSocket = IO.socket("http://192.168.0.105:5678");
+            mSocket = IO.socket("http://192.168.0.101:5678");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -67,9 +67,9 @@ public class SingletonServer {
                 Log.e(TAG, responseJson.toString());
                 try {
                     String responseType = responseJson.getString("type");
-                    String responseData = responseJson.getString("data");
                     switch (responseType) {
                         case RemoteInterface.RESP_SCHEDULE: {
+                            JSONArray responseData = responseJson.getJSONArray("data");
                             deliverEvent(LocalInterface.EVENT_SCHEDULE, responseData);
                             break;
                         }

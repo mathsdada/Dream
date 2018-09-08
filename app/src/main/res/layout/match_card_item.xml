@@ -5,10 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="5dp"
     app:cardElevation="5dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginBottom="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <android.support.constraint.ConstraintLayout
@@ -25,6 +23,7 @@
             android:gravity="center_horizontal"
             android:text="Match No. Venue"
             android:textSize="10sp"
+            android:textColor="#333333"
             app:layout_constraintBottom_toTopOf="@+id/team_a_tv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,11 +31,13 @@
         <TextView
             android:id="@+id/team_a_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="8dp"
             android:text="Team A"
+            android:textSize="15sp"
+            android:textColor="#673AB7"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,6 +65,7 @@
             app:layout_constraintWidth_percent="0.5"
             android:gravity="center_horizontal"
             android:text="Time"
+            android:textColor="@android:color/black"
 
             app:layout_constraintStart_toEndOf="@+id/vs_tv"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,11 +75,13 @@
         <TextView
             android:id="@+id/team_b_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
+            android:layout_height="30dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="Team B"
+            android:textColor="#673AB7"
+            android:textSize="15sp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
