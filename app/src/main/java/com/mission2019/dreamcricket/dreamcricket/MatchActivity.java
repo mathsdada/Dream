@@ -19,8 +19,16 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+
 public class MatchActivity extends AppCompatActivity {
 
+    public static final String KEY_MATCH_DATA = "KEY_MATCH_DATA";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -36,15 +44,23 @@ public class MatchActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private JSONObject mMatchJsonObject;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
 
+        // Extract Intent Data from Source
+        String intentData = getIntent().getStringExtra(KEY_MATCH_DATA);
+        Type type = new TypeToken<JSONObject>(){}.getType();
+        mMatchJsonObject = (new Gson()).fromJson(intentData, type);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("XX vs YY");
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());

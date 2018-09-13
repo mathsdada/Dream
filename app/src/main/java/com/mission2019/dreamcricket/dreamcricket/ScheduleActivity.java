@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,6 +124,8 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     @Override
     public void onMatchCardItemClick(int pos) {
         Intent intent = new Intent(ScheduleActivity.this, MatchActivity.class);
+        JSONObject jsonObject = (JSONObject) mScheduleAdapterDataSet.get(pos);
+        intent.putExtra(MatchActivity.KEY_MATCH_DATA, (new Gson()).toJson(jsonObject));
         startActivity(intent);
     }
 }
