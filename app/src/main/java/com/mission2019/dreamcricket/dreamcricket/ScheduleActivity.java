@@ -113,6 +113,8 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
                 e.printStackTrace();
             }
         }
+        /* Add one dummy series at the end */
+        mScheduleAdapterDataSet.add("");
         mScheduleRecyclerViewAdapter.notifyDataSetChanged();
     }
 }

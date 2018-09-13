@@ -77,24 +77,27 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     private class MatchViewHolder extends RecyclerView.ViewHolder {
         private TextView mTeamATextView, mTeamBTextView;
-        private TextView mVenueTextView, mTimeTextView;
+        private TextView mTitleTextView, mTimeTextView;
         MatchViewHolder(View matchView) {
             super(matchView);
             mTeamATextView = matchView.findViewById(R.id.team_a_tv);
             mTeamBTextView = matchView.findViewById(R.id.team_b_tv);
-            mVenueTextView = matchView.findViewById(R.id.title_venue_tv);
-            mTimeTextView = matchView.findViewById(R.id.time_tv);
+            mTitleTextView = matchView.findViewById(R.id.match_title_tv);
+            mTimeTextView = matchView.findViewById(R.id.match_time_tv);
         }
         void bindViews(JSONObject matchJsonObject) {
             try {
-                mVenueTextView.setText(matchJsonObject.getString("match_venue"));
-                mTimeTextView.setText(matchJsonObject.getString("match_time"));
+                String[] venue = matchJsonObject.getString("match_venue").split(",");
+                String[] title = matchJsonObject.getString("match_title").split(",");
+                String match_title = title[title.length-1] + " . " + venue[venue.length-1];
+                mTitleTextView.setText(match_title);
+                mTimeTextView.setText(Utility.convertEpochTime(matchJsonObject.getString("match_time")));
 
                 JSONArray teamJsonArray = matchJsonObject.getJSONArray("match_teams");
                 JSONObject teamAJsonObject = teamJsonArray.getJSONObject(0);
                 JSONObject teamBJsonObject = teamJsonArray.getJSONObject(1);
-                mTeamATextView.setText(teamAJsonObject.getString("team_name"));
-                mTeamBTextView.setText(teamBJsonObject.getString("team_name"));
+                mTeamATextView.setText(teamAJsonObject.getString("team_short_name"));
+                mTeamBTextView.setText(teamBJsonObject.getString("team_short_name"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
