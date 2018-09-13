@@ -17,9 +17,15 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private ArrayList<Object> mScheduleDataSet;
     private static final int ITEM_TYPE_SERIES = 0;
     private static final int ITEM_TYPE_MATCH = 1;
+    private MatchCardItemClickListener mListener;
 
-    public ScheduleRecyclerViewAdapter(ArrayList<Object> scheduleDataSet) {
+    public ScheduleRecyclerViewAdapter(ArrayList<Object> scheduleDataSet, MatchCardItemClickListener listener) {
         this.mScheduleDataSet = scheduleDataSet;
+        mListener = listener;
+    }
+
+    public interface MatchCardItemClickListener {
+        void onMatchCardItemClick(int pos);
     }
 
     @NonNull
@@ -75,7 +81,8 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     }
 
-    private class MatchViewHolder extends RecyclerView.ViewHolder {
+    private class MatchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final String TAG = MatchViewHolder.class.getSimpleName();
         private TextView mTeamATextView, mTeamBTextView;
         private TextView mTitleTextView, mTimeTextView;
         MatchViewHolder(View matchView) {
@@ -84,6 +91,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             mTeamBTextView = matchView.findViewById(R.id.team_b_tv);
             mTitleTextView = matchView.findViewById(R.id.match_title_tv);
             mTimeTextView = matchView.findViewById(R.id.match_time_tv);
+            matchView.setOnClickListener(this);
         }
         void bindViews(JSONObject matchJsonObject) {
             try {
@@ -101,6 +109,11 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onMatchCardItemClick(getAdapterPosition());
         }
     }
 }

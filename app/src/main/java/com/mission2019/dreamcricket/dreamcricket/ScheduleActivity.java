@@ -1,5 +1,6 @@
 package com.mission2019.dreamcricket.dreamcricket;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,7 +16,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ScheduleActivity extends AppCompatActivity implements SingletonServer.ServerEventListener {
+public class ScheduleActivity extends AppCompatActivity implements SingletonServer.ServerEventListener, ScheduleRecyclerViewAdapter.MatchCardItemClickListener {
     public static final String TAG = ScheduleActivity.class.getSimpleName();
     private JSONArray mSeriesJsonArray;
     private ArrayList<Object> mScheduleAdapterDataSet;
@@ -33,7 +34,7 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         mScheduleAdapterDataSet = new ArrayList<>();
         RecyclerView recyclerViewSchedule = findViewById(R.id.recyclerview_schedule);
         recyclerViewSchedule.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
-        mScheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter(mScheduleAdapterDataSet);
+        mScheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter(mScheduleAdapterDataSet, this);
         recyclerViewSchedule.setAdapter(mScheduleRecyclerViewAdapter);
         recyclerViewSchedule.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -116,5 +117,11 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         /* Add one dummy series at the end */
         mScheduleAdapterDataSet.add("");
         mScheduleRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onMatchCardItemClick(int pos) {
+        Intent intent = new Intent(ScheduleActivity.this, MatchActivity.class);
+        startActivity(intent);
     }
 }
