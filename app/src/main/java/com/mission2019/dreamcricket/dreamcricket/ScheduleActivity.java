@@ -1,6 +1,8 @@
 package com.mission2019.dreamcricket.dreamcricket;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -10,8 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.gson.Gson;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +20,9 @@ import java.util.ArrayList;
 
 public class ScheduleActivity extends AppCompatActivity implements SingletonServer.ServerEventListener, ScheduleRecyclerViewAdapter.MatchCardItemClickListener {
     public static final String TAG = ScheduleActivity.class.getSimpleName();
+    private static final String PERSIST_KEY_SCHEDULE = "PERSIST_KEY_SCHEDULE";
+    private static final String PERSIST_KEY_SCHEDULE_DATE = "PERSIST_KEY_SCHEDULE_DATE";
+    private String dateFormat = "dd-MM-yyyy";
     private JSONArray mSeriesJsonArray;
     private ArrayList<Object> mScheduleAdapterDataSet;
     private ScheduleRecyclerViewAdapter mScheduleRecyclerViewAdapter;
@@ -41,15 +44,50 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         recyclerViewSchedule.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    private void saveInstanceState() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(PERSIST_KEY_SCHEDULE, mSeriesJsonArray.toString());
+        editor.putString(PERSIST_KEY_SCHEDULE_DATE, Utility.getCurrentDate(dateFormat));
+        editor.apply();
+    }
+
+    private void restoreInstanceState() {
+        mSeriesJsonArray = null;
+
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String savedDate = sharedPref.getString(PERSIST_KEY_SCHEDULE_DATE, "");
+        String currentDate = Utility.getCurrentDate(dateFormat);
+        if(savedDate.equals(currentDate)) {
+            try {
+                String scheduleJsonString = sharedPref.getString(PERSIST_KEY_SCHEDULE, "");
+                if(scheduleJsonString.length() != 0) {
+                    mSeriesJsonArray = new JSONArray(scheduleJsonString);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.clear();
+        editor.apply();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        mServer.connect(this);
+        restoreInstanceState();
+        if (mSeriesJsonArray == null) {
+            mServer.connect(this);
+        } else {
+            updateScheduleAdapterDataSet(mSeriesJsonArray);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        saveInstanceState();
         mServer.disconnect();
     }
 
@@ -125,7 +163,7 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     public void onMatchCardItemClick(int pos) {
         Intent intent = new Intent(ScheduleActivity.this, MatchActivity.class);
         JSONObject jsonObject = (JSONObject) mScheduleAdapterDataSet.get(pos);
-        intent.putExtra(MatchActivity.KEY_MATCH_DATA, (new Gson()).toJson(jsonObject));
+        intent.putExtra(MatchActivity.KEY_MATCH_DATA, jsonObject.toString());
         startActivity(intent);
     }
 }

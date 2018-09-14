@@ -1,8 +1,6 @@
 package com.mission2019.dreamcricket.dreamcricket;
 
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -16,15 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 
 public class MatchActivity extends AppCompatActivity {
 
@@ -52,14 +45,17 @@ public class MatchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_match);
 
         // Extract Intent Data from Source
-        String intentData = getIntent().getStringExtra(KEY_MATCH_DATA);
-        Type type = new TypeToken<JSONObject>(){}.getType();
-        mMatchJsonObject = (new Gson()).fromJson(intentData, type);
+        String intentJsonData = getIntent().getStringExtra(KEY_MATCH_DATA);
+        try {
+            mMatchJsonObject = new JSONObject(intentJsonData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("XX vs YY");
+        changeActionBarTitle();
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -73,6 +69,18 @@ public class MatchActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+    }
+
+    private void changeActionBarTitle() {
+        try {
+            JSONArray teamJsonArray = mMatchJsonObject.getJSONArray("match_teams");
+            String teamA = teamJsonArray.getJSONObject(0).getString("team_short_name");
+            String teamB = teamJsonArray.getJSONObject(1).getString("team_short_name");
+            getSupportActionBar().setTitle(teamA.toUpperCase() + " vs " +
+                                           teamB.toUpperCase());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 

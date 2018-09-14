@@ -17,6 +17,7 @@ public class SingletonServer {
     private static SingletonServer instance = null;
     private Socket mSocket;
     private ServerEventListener mEventListener;
+    private boolean isConnected = false;
 
     public interface ServerEventListener {
         void onServerEvent(Object... args);
@@ -45,6 +46,7 @@ public class SingletonServer {
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                isConnected = true;
                 deliverEvent(LocalInterface.EVENT_CONNECTION_SUCCESS, null);
             }
         });
@@ -60,6 +62,13 @@ public class SingletonServer {
                 deliverEvent(LocalInterface.EVENT_CONNECTION_TIMEOUT, null);
             }
         });
+        mSocket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                isConnected = false;
+            }
+        });
+
         mSocket.on("response", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -100,7 +109,9 @@ public class SingletonServer {
 
     public void disconnect() {
         mEventListener = null;
-        mSocket.disconnect();
+        if (isConnected) {
+            mSocket.disconnect();
+        }
     }
 
     public void getSchedule() {

@@ -1,6 +1,7 @@
 package com.mission2019.dreamcricket.dreamcricket;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -12,6 +13,12 @@ public class Utility {
         // https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
+        return simpleDateFormat.format(date);
+    }
+
+    public static String getCurrentDate(String format) {
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
     }
 }
