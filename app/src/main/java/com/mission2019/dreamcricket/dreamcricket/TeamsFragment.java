@@ -16,17 +16,15 @@ import org.json.JSONObject;
 
 public class TeamsFragment extends Fragment {
     private static final String TAG = TeamsFragment.class.getSimpleName();
-    public static final String KEY_MATCH_DATA_TEAM_FRAGMENT = "KEY_MATCH_DATA_TEAM_FRAGMENT";
     private JSONObject mMatchJSONObject;
 
     public TeamsFragment() {
-
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String matchData = getArguments().getString(KEY_MATCH_DATA_TEAM_FRAGMENT);
+        String matchData = getArguments().getString(MatchActivity.KEY_MATCH_DATA);
         try {
             mMatchJSONObject = new JSONObject(matchData);
             Log.e(TAG, mMatchJSONObject.toString());

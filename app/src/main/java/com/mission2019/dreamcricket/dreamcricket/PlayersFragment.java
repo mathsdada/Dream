@@ -15,7 +15,6 @@ import org.json.JSONObject;
 
 public class PlayersFragment extends Fragment {
     private static String TAG = PlayersFragment.class.getSimpleName();
-    public static final String KEY_MATCH_DATA_PLAYER_FRAGMENT = "KEY_MATCH_DATA_PLAYER_FRAGMENT";
     private JSONObject mMatchJSONObject;
 
     public PlayersFragment() {
@@ -24,7 +23,7 @@ public class PlayersFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String matchData = getArguments().getString(KEY_MATCH_DATA_PLAYER_FRAGMENT);
+        String matchData = getArguments().getString(MatchActivity.KEY_MATCH_DATA);
         try {
             mMatchJSONObject = new JSONObject(matchData);
             Log.e(TAG, mMatchJSONObject.toString());

@@ -10,18 +10,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class MatchActivity extends AppCompatActivity {
-
+    private static final String TAG = MatchActivity.class.getSimpleName();
     public static final String KEY_MATCH_DATA = "KEY_MATCH_DATA";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -53,7 +50,8 @@ public class MatchActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -72,37 +70,33 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private ArrayList<Fragment> mFragmentList;
+
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            Fragment fragment = null;
+            mFragmentList = new ArrayList<>();
+
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_MATCH_DATA, mMatchJsonObject.toString());
+
+            fragment = new TeamsFragment();
+            fragment.setArguments(bundle);
+            mFragmentList.add(0, fragment);
+
+            fragment = new PlayersFragment();
+            fragment.setArguments(bundle);
+            mFragmentList.add(1, fragment);
+
+            fragment = new VenueFragment();
+            fragment.setArguments(bundle);
+            mFragmentList.add(2, fragment);
         }
+
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment = null;
-            String key = "";
-            switch (position) {
-                case 0: {
-                    fragment = new TeamsFragment();
-                    key = TeamsFragment.KEY_MATCH_DATA_TEAM_FRAGMENT;
-                    break;
-                }
-                case 1: {
-                    fragment = new PlayersFragment();
-                    key = PlayersFragment.KEY_MATCH_DATA_PLAYER_FRAGMENT;
-                    break;
-                }
-                case 2: {
-                    fragment = new VenueFragment();
-                    key = VenueFragment.KEY_MATCH_DATA_VENUE_FRAGMENT;
-                    break;
-                }
-            }
-            if (fragment != null) {
-                Bundle bundle = new Bundle();
-                bundle.putString(key, mMatchJsonObject.toString());
-                fragment.setArguments(bundle);
-            }
-            return fragment;
+            return mFragmentList.get(position);
         }
 
         @Override
