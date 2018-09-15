@@ -38,7 +38,7 @@ public class SingletonServer {
 
     private SingletonServer() {
         try {
-            mSocket = IO.socket("http://192.168.0.104:5678");
+            mSocket = IO.socket("http://192.168.0.102:5678");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
