@@ -24,7 +24,7 @@ public class MatchActivity extends AppCompatActivity {
     private static final String TAG = MatchActivity.class.getSimpleName();
     public static final String KEY_MATCH_DATA = "KEY_MATCH_DATA";
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
     private JSONObject mMatchJsonObject;
 
     @Override
@@ -52,20 +52,14 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        // Below code will disable swiping in the view pager..
-        mViewPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        mViewPager.setPagingEnabled(false);
     }
     private void changeActionBarTitle() {
         try {
@@ -125,7 +119,6 @@ public class MatchActivity extends AppCompatActivity {
             return "";
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

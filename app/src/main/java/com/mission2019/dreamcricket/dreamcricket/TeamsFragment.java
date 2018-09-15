@@ -36,9 +36,19 @@ public class TeamsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_match, container, false);
-        TextView textView = view.findViewById(R.id.section_label);
-        textView.setText("Team Fragment");
+        View view = inflater.inflate(R.layout.fragment_team_stats, container, false);
+        TextView teamOneTextView = view.findViewById(R.id.team_a_title_tv);
+        TextView teamTwoTextView = view.findViewById(R.id.team_b_title_tv);
+
+        try {
+            JSONArray teamJsonArray = mMatchJSONObject.getJSONArray("match_teams");
+            String teamA = teamJsonArray.getJSONObject(0).getString("team_name");
+            String teamB = teamJsonArray.getJSONObject(1).getString("team_name");
+            teamOneTextView.setText(teamA);
+            teamTwoTextView.setText(teamB);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return view;
     }
 }
