@@ -87,7 +87,9 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     @Override
     protected void onPause() {
         super.onPause();
-        saveInstanceState();
+        if (mSeriesJsonArray != null) {
+            saveInstanceState();
+        }
         mServer.disconnect();
     }
 
