@@ -12,10 +12,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             app:cardElevation="2dp"
             android:layout_width="match_parent"
             android:layout_height="0dp">
@@ -25,18 +24,51 @@
                 <TextView
                     android:id="@+id/team_a_title_tv"
                     android:text="Mumbai Indians"
+                    android:textColor="#FFFFFF"
+                    android:background="@color/teamBlock"
                     android:gravity="left|center"
                     android:textAppearance="?android:textAppearanceMedium"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginStart="5dp"
-                    android:drawableEnd="@drawable/baseline_keyboard_arrow_right_24"
+                    android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
+                    android:paddingStart="10dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp" />
+                    android:layout_height="60dp" />
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/team_a_card_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/team_a_title_tv"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:animateLayoutChanges="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/win_loss_perf_tv"
+                        android:text="Recent Form"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview_team_a_form"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/win_loss_perf_tv"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"/>
+                </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
         </android.support.design.card.MaterialCardView>
         <android.support.design.card.MaterialCardView
@@ -44,9 +76,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/team_a_card"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginBottom="10dp"
             app:cardElevation="2dp"
             android:layout_width="match_parent"
@@ -56,19 +88,18 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/team_b_title_tv"
-                    android:text="Chennai Super Kings"
+                    android:text="Mumbai Indians"
+                    android:textColor="#FFFFFF"
+                    android:background="@color/teamBlock"
                     android:gravity="left|center"
                     android:textAppearance="?android:textAppearanceMedium"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginStart="5dp"
-                    android:drawableEnd="@drawable/baseline_keyboard_arrow_right_24"
+                    android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
+                    android:paddingStart="10dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp" />
+                    android:layout_height="60dp" />
             </android.support.constraint.ConstraintLayout>
         </android.support.design.card.MaterialCardView>
     </android.support.constraint.ConstraintLayout>
