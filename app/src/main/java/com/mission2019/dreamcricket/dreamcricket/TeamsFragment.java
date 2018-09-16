@@ -23,13 +23,16 @@ import java.util.ArrayList;
 public class TeamsFragment extends Fragment {
     private static final String TAG = TeamsFragment.class.getSimpleName();
     private JSONObject mMatchJSONObject;
-    private TextView mTeamOneTextView;
-    private TextView mTeamTwoTextView;
-    private ConstraintLayout mTeamOneCardLayout;
-    private RecyclerView mTeamOneFormRecyclerView;
+    private TextView mTeamATitleTextView;
+    private TextView mTeamBTitleTextView;
+    private ConstraintLayout mTeamAStatsLayout;
+    private RecyclerView mTeamAStatsFormRV;
+    private RecyclerView mTeamAStatsMatchesRV;
 
-    private ArrayList<Object> mTeamFormDataSet;
-    private TeamFormRecyclerViewAdapter mTeamFormRecyclerViewAdapter;
+    private ArrayList<Object> mTeamAStatsFormData;
+    private TeamRecylerviewAdapter mTeamAStatsFormRVAdapter;
+    private ArrayList<Object> mTeamAStatsMatchesData;
+    private TeamRecylerviewAdapter mTeamAStatsMatchesRVAdapter;
 
     public TeamsFragment() {
     }
@@ -55,75 +58,112 @@ public class TeamsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTeamOneTextView = view.findViewById(R.id.team_a_title_tv);
-        mTeamTwoTextView = view.findViewById(R.id.team_b_title_tv);
-        mTeamOneCardLayout = view.findViewById(R.id.team_a_card_layout);
+        mTeamATitleTextView = view.findViewById(R.id.team_a_title_tv);
+        mTeamBTitleTextView = view.findViewById(R.id.team_b_title_tv);
+        mTeamAStatsLayout = view.findViewById(R.id.team_a_card_layout);
+        mTeamAStatsFormRV = view.findViewById(R.id.recyclerview_team_a_form);
+        mTeamAStatsMatchesRV = view.findViewById(R.id.recyclerview_team_a_matches);
 
-        mTeamOneFormRecyclerView = view.findViewById(R.id.recyclerview_team_a_form);
-        mTeamFormDataSet = new ArrayList<>();
+
+        /* Form */
+        mTeamAStatsFormData = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
         for (int i=0; i < 10; i++) {
-            mTeamFormDataSet.add(jsonObject);
+            mTeamAStatsFormData.add(jsonObject);
         }
-        mTeamFormRecyclerViewAdapter = new TeamFormRecyclerViewAdapter(mTeamFormDataSet);
-        mTeamOneFormRecyclerView.setAdapter(mTeamFormRecyclerViewAdapter);
-        mTeamOneFormRecyclerView.setLayoutManager(
+        mTeamAStatsFormRVAdapter = new TeamRecylerviewAdapter(mTeamAStatsFormData, "TeamForm");
+        mTeamAStatsFormRV.setAdapter(mTeamAStatsFormRVAdapter);
+        mTeamAStatsFormRV.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        /* Recent Matches */
+        mTeamAStatsMatchesData = new ArrayList<>();
+        for (int i=0; i < 10; i++) {
+            mTeamAStatsMatchesData.add(jsonObject);
+        }
+        mTeamAStatsMatchesRVAdapter = new TeamRecylerviewAdapter(mTeamAStatsMatchesData, "TeamMatches");
+        mTeamAStatsMatchesRV.setAdapter(mTeamAStatsMatchesRVAdapter);
+        mTeamAStatsMatchesRV.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
         try {
             JSONArray teamJsonArray = mMatchJSONObject.getJSONArray("match_teams");
             String teamA = teamJsonArray.getJSONObject(0).getString("team_name");
             String teamB = teamJsonArray.getJSONObject(1).getString("team_name");
-            mTeamOneTextView.setText(teamA);
-            mTeamTwoTextView.setText(teamB);
+            mTeamATitleTextView.setText(teamA);
+            mTeamBTitleTextView.setText(teamB);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        mTeamOneTextView.setOnClickListener(new View.OnClickListener() {
+        mTeamATitleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTeamOneCardLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-                if (mTeamOneCardLayout.getVisibility() == View.GONE) {
-                    mTeamOneCardLayout.setVisibility(View.VISIBLE);
-                    mTeamOneTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                mTeamAStatsLayout.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+                if (mTeamAStatsLayout.getVisibility() == View.GONE) {
+                    mTeamAStatsLayout.setVisibility(View.VISIBLE);
+                    mTeamATitleTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(
                             0, 0, R.drawable.baseline_keyboard_arrow_up_24, 0);
                 } else {
-                    mTeamOneCardLayout.setVisibility(View.GONE);
-                    mTeamOneTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    mTeamAStatsLayout.setVisibility(View.GONE);
+                    mTeamATitleTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(
                             0, 0, R.drawable.baseline_keyboard_arrow_down_24, 0);
                 }
             }
         });
     }
 
-    public class TeamFormRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        private ArrayList<Object> mTeamFormDataSet;
+    public class TeamRecylerviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private ArrayList<Object> mDataSet;
+        private String mDataType;
 
-        public TeamFormRecyclerViewAdapter(ArrayList<Object> mTeamFormDataSet) {
-            this.mTeamFormDataSet = mTeamFormDataSet;
+        public TeamRecylerviewAdapter(ArrayList<Object> mTeamFormDataSet, String dataType) {
+            this.mDataSet = mTeamFormDataSet;
+            this.mDataType = dataType;
         }
 
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_form_card_item, parent, false);
-            return new TeamFormViewHolder(view);
+            if (mDataType.equals("TeamForm")) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_form_card_item, parent, false);
+                return new FormViewHolder(view);
+            }
+            if (mDataType.equals("TeamMatches")) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_matches_card_item, parent, false);
+                return new MatchesViewHolder(view);
+            }
+            return null;
         }
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            ((TeamFormViewHolder)holder).bindViews((JSONObject) mTeamFormDataSet.get(position));
+            if (mDataType.equals("TeamForm")) {
+                ((FormViewHolder) holder).bindViews((JSONObject) mDataSet.get(position));
+            } else if (mDataType.equals("TeamMatches")) {
+                ((MatchesViewHolder) holder).bindViews((JSONObject) mDataSet.get(position));
+            }
         }
 
         @Override
         public int getItemCount() {
-            return 10;
+            return mDataSet.size();
         }
 
-        private class TeamFormViewHolder extends RecyclerView.ViewHolder {
+        private class FormViewHolder extends RecyclerView.ViewHolder {
 
-            TeamFormViewHolder(View seriesView) {
-                super(seriesView);
+            FormViewHolder(View view) {
+                super(view);
+            }
+
+            void bindViews(JSONObject teamForm) {
+            }
+
+        }
+
+        private class MatchesViewHolder extends RecyclerView.ViewHolder {
+
+            MatchesViewHolder(View view) {
+                super(view);
             }
 
             void bindViews(JSONObject teamForm) {
