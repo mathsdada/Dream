@@ -25,7 +25,7 @@
                     android:id="@+id/team_a_title_tv"
                     android:text="Mumbai Indians"
                     android:textColor="#FFFFFF"
-                    android:background="@color/teamBlock"
+                    android:background="@color/colorPrimary"
                     android:gravity="left|center"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
@@ -41,6 +41,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/team_a_title_tv"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone"
                     android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
                     android:animateLayoutChanges="true"
@@ -67,7 +68,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"/>
+                        android:layout_height="wrap_content"/>
 
                     <TextView
                         android:id="@+id/recent_matches_tv"
@@ -85,6 +86,52 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/recent_matches_tv"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/top_batsman_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Top Batting Performances"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/recyclerview_team_a_matches" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview_team_a_top_batsman"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/top_batsman_tv"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/top_bowlers_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Top Bowling Performances"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/recyclerview_team_a_top_batsman" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview_team_a_top_bowlers"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/top_bowlers_tv"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="5dp"
@@ -114,7 +161,7 @@
                     android:id="@+id/team_b_title_tv"
                     android:text="Mumbai Indians"
                     android:textColor="#FFFFFF"
-                    android:background="@color/teamBlock"
+                    android:background="@color/colorPrimary"
                     android:gravity="left|center"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
@@ -124,6 +171,111 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_width="match_parent"
                     android:layout_height="60dp" />
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/team_b_card_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/team_b_title_tv"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:animateLayoutChanges="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/team_b_recent_form_tv"
+                        android:text="Recent Form"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview_team_b_form"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/team_b_recent_form_tv"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/team_b_recent_matches_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Recent Matches"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/recyclerview_team_b_form" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview_team_b_matches"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/team_b_recent_matches_tv"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/team_b_top_batsman_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Top Batting Performances"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/recyclerview_team_b_matches" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview_team_b_top_batsman"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/team_b_top_batsman_tv"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/team_b_top_bowlers_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Top Bowling Performances"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/recyclerview_team_b_top_batsman" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview_team_b_top_bowlers"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/team_b_top_bowlers_tv"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </android.support.constraint.ConstraintLayout>
             </android.support.constraint.ConstraintLayout>
         </android.support.design.card.MaterialCardView>
     </android.support.constraint.ConstraintLayout>

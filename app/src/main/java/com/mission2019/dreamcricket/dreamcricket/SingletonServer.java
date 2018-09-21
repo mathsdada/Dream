@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public class SingletonServer {
     private String TAG = SingletonServer.class.getSimpleName();
@@ -38,7 +39,7 @@ public class SingletonServer {
 
     private SingletonServer() {
         try {
-            mSocket = IO.socket("http://192.168.0.103:5678");
+            mSocket = IO.socket("http://192.168.0.108:5678");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -82,6 +83,11 @@ public class SingletonServer {
                             deliverEvent(LocalInterface.EVENT_SCHEDULE, responseData);
                             break;
                         }
+                        case RemoteInterface.RESP_TEAM_STATS: {
+                            JSONArray responseData = responseJson.getJSONArray("data");
+                            deliverEvent(LocalInterface.EVENT_TEAM_STATS, responseData);
+                            break;
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -116,6 +122,23 @@ public class SingletonServer {
 
     public void getSchedule() {
         query(RemoteInterface.QUERY_SCHEDULE, "");
+    }
+    public void getTeamForm(ArrayList<String> teamNames, String matchFormat) {
+        JSONObject queryJSONObject = new JSONObject();
+        try {
+            queryJSONObject.put("format", matchFormat);
+            JSONArray teamJSONArray = new JSONArray();
+            for (String teamName : teamNames) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("team_name", teamName);
+                teamJSONArray.put(jsonObject);
+            }
+            queryJSONObject.put("teams", teamJSONArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        query(RemoteInterface.QUERY_TEAM_STATS, queryJSONObject.toString());
     }
 
     //    private void processScheduleJsonArray(JSONArray seriesJsonArray) {
