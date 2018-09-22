@@ -1,4 +1,4 @@
-package com.mission2019.dreamcricket.dreamcricket;
+package com.mission2019.dreamcricket.dreamcricket.Server;
 
 public class RemoteInterface
 {

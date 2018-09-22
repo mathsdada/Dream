@@ -8,12 +8,13 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+
+import com.mission2019.dreamcricket.dreamcricket.PlayerStats.PlayersFragment;
+import com.mission2019.dreamcricket.dreamcricket.TeamStats.TeamsFragment;
+import com.mission2019.dreamcricket.dreamcricket.VenueStats.VenueFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;

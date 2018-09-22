@@ -1,4 +1,4 @@
-package com.mission2019.dreamcricket.dreamcricket;
+package com.mission2019.dreamcricket.dreamcricket.Server;
 
 import android.util.Log;
 
@@ -39,7 +39,7 @@ public class SingletonServer {
 
     private SingletonServer() {
         try {
-            mSocket = IO.socket("http://192.168.0.108:5678");
+            mSocket = IO.socket("http://192.168.0.105:5678");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

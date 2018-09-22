@@ -1,4 +1,4 @@
-package com.mission2019.dreamcricket.dreamcricket;
+package com.mission2019.dreamcricket.dreamcricket.TeamStats;
 
 import android.animation.LayoutTransition;
 import android.os.Bundle;
@@ -13,6 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.mission2019.dreamcricket.dreamcricket.Server.JsonExtractor;
+import com.mission2019.dreamcricket.dreamcricket.Server.LocalInterface;
+import com.mission2019.dreamcricket.dreamcricket.MatchActivity;
+import com.mission2019.dreamcricket.dreamcricket.R;
+import com.mission2019.dreamcricket.dreamcricket.Server.SingletonServer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,22 +107,10 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
         mTeamBTopBatsmenRV = view.findViewById(R.id.recyclerview_team_b_top_batsman);
         mTeamBTopBowlersRV = view.findViewById(R.id.recyclerview_team_b_top_bowlers);
 
-        /* Form */
         initializeTeamStatsForm();
+        initializeTeamStatsRecentMatches();
 
         JSONObject jsonObject = new JSONObject();
-
-        /* Recent Matches */
-        mTeamAStatsMatchesData = new ArrayList<>();
-        for (int i=0; i < 10; i++) {
-            mTeamAStatsMatchesData.add(jsonObject);
-        }
-        mTeamAStatsMatchesRVAdapter = new TeamRecylerviewAdapter(mTeamAStatsMatchesData,
-                ADAPTER_TYPE_MATCHES);
-        mTeamAStatsMatchesRV.setAdapter(mTeamAStatsMatchesRVAdapter);
-        mTeamAStatsMatchesRV.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
         /* Top Batsman */
         mTeamAStatsTopBatsmenData = new ArrayList<>();
         for (int i=0; i < 10; i++) {
@@ -137,18 +131,6 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
                 ADAPTER_TYPE_TOP_BOWLERS);
         mTeamATopBowlersRV.setAdapter(mTeamAStatsTopBowlersRVAdapter);
         mTeamATopBowlersRV.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-
-        /* Recent Matches */
-        mTeamBStatsMatchesData = new ArrayList<>();
-        for (int i=0; i < 10; i++) {
-            mTeamBStatsMatchesData.add(jsonObject);
-        }
-        mTeamBStatsMatchesRVAdapter = new TeamRecylerviewAdapter(mTeamBStatsMatchesData,
-                ADAPTER_TYPE_MATCHES);
-        mTeamBStatsMatchesRV.setAdapter(mTeamBStatsMatchesRVAdapter);
-        mTeamBStatsMatchesRV.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         /* Top Batsman */
@@ -236,6 +218,22 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
+    private void initializeTeamStatsRecentMatches() {
+        mTeamAStatsMatchesData = new ArrayList<>();
+        mTeamAStatsMatchesRVAdapter = new TeamRecylerviewAdapter(mTeamAStatsMatchesData,
+                ADAPTER_TYPE_MATCHES);
+        mTeamAStatsMatchesRV.setAdapter(mTeamAStatsMatchesRVAdapter);
+        mTeamAStatsMatchesRV.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        mTeamBStatsMatchesData = new ArrayList<>();
+        mTeamBStatsMatchesRVAdapter = new TeamRecylerviewAdapter(mTeamBStatsMatchesData,
+                ADAPTER_TYPE_MATCHES);
+        mTeamBStatsMatchesRV.setAdapter(mTeamBStatsMatchesRVAdapter);
+        mTeamBStatsMatchesRV.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    }
+
     private void updateTeamFormOnUI(String teamName, TeamForm teamForm) {
         ArrayList<Object> dataSet;
         final TeamRecylerviewAdapter adapter;
@@ -255,10 +253,32 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
             }
         });
     }
-    private void updateTeamStatsOnUI(TeamStats teamStats) {
-        TeamForm teamForm = teamStats.getTeamForm();
-        updateTeamFormOnUI(teamStats.getTeamName(), teamForm);
+
+    private void updateTeamRecentMatchesOnUI(String teamName, TeamRecentMatches recentMatchesScorecards) {
+        ArrayList<Object> dataSet;
+        final TeamRecylerviewAdapter adapter;
+        if (teamName.equals(mTeamATitle)) {
+            dataSet = mTeamAStatsMatchesData;
+            adapter = mTeamAStatsMatchesRVAdapter;
+        } else {
+            dataSet = mTeamBStatsMatchesData;
+            adapter = mTeamBStatsMatchesRVAdapter;
+        }
+        dataSet.clear();
+        dataSet.addAll(recentMatchesScorecards.getMatchScorecards());
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
+
+    private void updateTeamStatsOnUI(TeamStats teamStats) {
+        updateTeamFormOnUI(teamStats.getTeamName(), teamStats.getTeamForm());
+        updateTeamRecentMatchesOnUI(teamStats.getTeamName(), teamStats.getRecentMatchesScorecards());
+    }
+
     @Override
     public void onServerEvent(Object... args) {
         String eventType = (String) args[0];
@@ -332,7 +352,8 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
                     ((FormViewHolder) holder).bindViews((TeamMatchOutcome) mDataSet.get(position));
                     break;
                 case ADAPTER_TYPE_MATCHES:
-                    ((MatchesViewHolder) holder).bindViews((JSONObject) mDataSet.get(position));
+                    ((MatchesViewHolder) holder).bindViews(
+                            (MatchScorecard) mDataSet.get(position));
                     break;
                 case ADAPTER_TYPE_TOP_BATSMEN:
                     ((TopBatsmenViewHolder) holder).bindViews((JSONObject) mDataSet.get(position));
@@ -398,12 +419,46 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
         }
 
         private class MatchesViewHolder extends RecyclerView.ViewHolder {
-
+            private TextView mInningsOneTV;
+            private TextView mInningsTwoTV;
+            private TextView mInningsThreeTV;
+            private TextView mInningsFourTV;
             MatchesViewHolder(View view) {
                 super(view);
+                mInningsOneTV = view.findViewById(R.id.team_matches_innings_1_tv);
+                mInningsTwoTV = view.findViewById(R.id.team_matches_innings_2_tv);
+                mInningsThreeTV = view.findViewById(R.id.team_matches_innings_3_tv);
+                mInningsFourTV = view.findViewById(R.id.team_matches_innings_4_tv);
             }
 
-            void bindViews(JSONObject teamForm) {
+            void bindViews(MatchScorecard recentMatches) {
+                for (MatchInningsScore inningsScore : recentMatches.getMatchInningsScores()) {
+                    String inningsScoreStr = inningsScore.getTeamName() + " " +
+                            inningsScore.getRuns() + "-" + inningsScore.getWickets() + " (" +
+                            inningsScore.getOvers() + ")";
+                    switch (inningsScore.getInningsNumber()) {
+                        case 0: {
+                            mInningsOneTV.setText(inningsScoreStr);
+                            mInningsOneTV.setVisibility(View.VISIBLE);
+                            break;
+                        }
+                        case 1: {
+                            mInningsTwoTV.setText(inningsScoreStr);
+                            mInningsTwoTV.setVisibility(View.VISIBLE);
+                            break;
+                        }
+                        case 2: {
+                            mInningsThreeTV.setText(inningsScoreStr);
+                            mInningsThreeTV.setVisibility(View.VISIBLE);
+                            break;
+                        }
+                        case 3: {
+                            mInningsFourTV.setText(inningsScoreStr);
+                            mInningsFourTV.setVisibility(View.VISIBLE);
+                            break;
+                        }
+                    }
+                }
             }
 
         }
