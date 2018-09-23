@@ -3,17 +3,17 @@ package com.mission2019.dreamcricket.dreamcricket.TeamStats;
 import java.util.ArrayList;
 
 public class TeamRecentMatches {
-    private ArrayList<MatchScorecard> mMatchScorecards;
+    private ArrayList<TeamMatchScorecard> mMatchScorecards;
 
     public TeamRecentMatches() {
         mMatchScorecards = new ArrayList<>();
     }
 
-    public ArrayList<MatchScorecard> getMatchScorecards() {
+    public ArrayList<TeamMatchScorecard> getMatchScorecards() {
         return mMatchScorecards;
     }
 
-    public void setMatchScorecard(MatchScorecard matchScorecard) {
+    public void setMatchScorecard(TeamMatchScorecard matchScorecard) {
         mMatchScorecards.add(matchScorecard);
     }
 }

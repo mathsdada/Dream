@@ -1,13 +1,13 @@
 package com.mission2019.dreamcricket.dreamcricket.TeamStats;
 
-public class MatchInningsScore {
+public class TeamMatchInningsScore {
     private String mTeamName;
     private String mRuns;
     private String mWickets;
     private String mOvers;
     private int mInningsNumber;
 
-    public MatchInningsScore(String teamName, String runs, String wickets, String overs, int inningsNumber) {
+    public TeamMatchInningsScore(String teamName, String runs, String wickets, String overs, int inningsNumber) {
         mTeamName = teamName;
         mRuns = runs;
         mWickets = wickets;

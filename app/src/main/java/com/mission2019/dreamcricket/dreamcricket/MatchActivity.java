@@ -1,5 +1,6 @@
 package com.mission2019.dreamcricket.dreamcricket;
 
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,13 +13,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mission2019.dreamcricket.dreamcricket.PlayerStats.PlayersFragment;
+import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
 import com.mission2019.dreamcricket.dreamcricket.TeamStats.TeamsFragment;
 import com.mission2019.dreamcricket.dreamcricket.VenueStats.VenueFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MatchActivity extends AppCompatActivity {
@@ -26,20 +32,18 @@ public class MatchActivity extends AppCompatActivity {
     public static final String KEY_MATCH_DATA = "KEY_MATCH_DATA";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private CustomViewPager mViewPager;
-    private JSONObject mMatchJsonObject;
+    private Match mMatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
 
-        // Extract Intent Data from Source
-        String intentJsonData = getIntent().getStringExtra(KEY_MATCH_DATA);
-        try {
-            mMatchJsonObject = new JSONObject(intentJsonData);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Intent intent = getIntent();
+        String data = intent.getStringExtra(KEY_MATCH_DATA);
+        Gson gson = new Gson();
+        Type type = new TypeToken<Match>() {}.getType();
+        mMatch = gson.fromJson(data, type);
 
         setupActionBar();
         setupViewPager();
@@ -63,15 +67,10 @@ public class MatchActivity extends AppCompatActivity {
         mViewPager.setPagingEnabled(false);
     }
     private void changeActionBarTitle() {
-        try {
-            JSONArray teamJsonArray = mMatchJsonObject.getJSONArray("match_teams");
-            String teamA = teamJsonArray.getJSONObject(0).getString("team_short_name");
-            String teamB = teamJsonArray.getJSONObject(1).getString("team_short_name");
-            getSupportActionBar().setTitle(teamA.toUpperCase() + " vs " +
-                                           teamB.toUpperCase());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        String teamA = mMatch.getTeams().get(0).getShortName();
+        String teamB = mMatch.getTeams().get(1).getShortName();
+        getSupportActionBar().setTitle(teamA.toUpperCase() + " vs " +
+                                       teamB.toUpperCase());
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -83,7 +82,8 @@ public class MatchActivity extends AppCompatActivity {
             mFragmentList = new ArrayList<>();
 
             Bundle bundle = new Bundle();
-            bundle.putString(KEY_MATCH_DATA, mMatchJsonObject.toString());
+            Gson gson = new Gson();
+            bundle.putString(KEY_MATCH_DATA, gson.toJson(mMatch));
 
             fragment = new TeamsFragment();
             fragment.setArguments(bundle);

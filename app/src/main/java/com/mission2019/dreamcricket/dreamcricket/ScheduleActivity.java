@@ -9,9 +9,16 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
+import com.mission2019.dreamcricket.dreamcricket.Schedule.Schedule;
+import com.mission2019.dreamcricket.dreamcricket.Schedule.Series;
+import com.mission2019.dreamcricket.dreamcricket.Server.JsonExtractor;
 import com.mission2019.dreamcricket.dreamcricket.Server.LocalInterface;
 import com.mission2019.dreamcricket.dreamcricket.Server.SingletonServer;
 
@@ -19,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class ScheduleActivity extends AppCompatActivity implements SingletonServer.ServerEventListener, ScheduleRecyclerViewAdapter.MatchCardItemClickListener {
@@ -26,7 +34,7 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     private static final String PERSIST_KEY_SCHEDULE = "PERSIST_KEY_SCHEDULE";
     private static final String PERSIST_KEY_SCHEDULE_DATE = "PERSIST_KEY_SCHEDULE_DATE";
     private String dateFormat = "dd-MM-yyyy";
-    private JSONArray mSeriesJsonArray;
+    private Schedule mSchedule;
     private ArrayList<Object> mScheduleAdapterDataSet;
     private ScheduleRecyclerViewAdapter mScheduleRecyclerViewAdapter;
     private SingletonServer mServer;
@@ -50,25 +58,25 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     private void saveInstanceState() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(PERSIST_KEY_SCHEDULE, mSeriesJsonArray.toString());
+
+        Gson gson = new Gson();
+        editor.putString(PERSIST_KEY_SCHEDULE, gson.toJson(mSchedule));
         editor.putString(PERSIST_KEY_SCHEDULE_DATE, Utility.getCurrentDate(dateFormat));
         editor.apply();
     }
 
     private void restoreInstanceState() {
-        mSeriesJsonArray = null;
+        mSchedule = null;
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         String savedDate = sharedPref.getString(PERSIST_KEY_SCHEDULE_DATE, "");
         String currentDate = Utility.getCurrentDate(dateFormat);
         if(savedDate.equals(currentDate)) {
-            try {
-                String scheduleJsonString = sharedPref.getString(PERSIST_KEY_SCHEDULE, "");
-                if(scheduleJsonString.length() != 0) {
-                    mSeriesJsonArray = new JSONArray(scheduleJsonString);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            String scheduleJson = sharedPref.getString(PERSIST_KEY_SCHEDULE, "");
+            Gson gson = new Gson();
+            Type type = new TypeToken<Schedule>() {}.getType();
+            if (scheduleJson.length() != 0) {
+                mSchedule = gson.fromJson(scheduleJson, type);
             }
         }
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -80,17 +88,17 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     protected void onResume() {
         super.onResume();
         restoreInstanceState();
-        if (mSeriesJsonArray == null) {
+        if (mSchedule == null) {
             mServer.connect(this);
         } else {
-            updateScheduleAdapterDataSet(mSeriesJsonArray);
+            updateScheduleOnUI(mSchedule.getSerieses());
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (mSeriesJsonArray != null) {
+        if (mSchedule != null) {
             saveInstanceState();
         }
         mServer.disconnect();
@@ -135,8 +143,8 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mSeriesJsonArray = (JSONArray) args[1];
-                        updateScheduleAdapterDataSet(mSeriesJsonArray);
+                        mSchedule = JsonExtractor.extractSchedule((JSONArray) args[1]);
+                        updateScheduleOnUI(mSchedule.getSerieses());
                     }
                 });
                 break;
@@ -144,20 +152,11 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         }
     }
 
-    private void updateScheduleAdapterDataSet(JSONArray seriesJsonArray) {
+    private void updateScheduleOnUI(ArrayList<Series> seriesArrayList) {
         mScheduleAdapterDataSet.clear();
-        for (int seriesIndex = 0; seriesIndex < seriesJsonArray.length(); seriesIndex++) {
-            try {
-                JSONObject seriesJsonObject = seriesJsonArray.getJSONObject(seriesIndex);
-                mScheduleAdapterDataSet.add(seriesJsonObject.getString("series_title"));
-                JSONArray matchJsonArray = seriesJsonObject.getJSONArray("series_data");
-                for (int matchIndex = 0; matchIndex < matchJsonArray.length(); matchIndex++) {
-                    JSONObject matchJsonObject = matchJsonArray.getJSONObject(matchIndex);
-                    mScheduleAdapterDataSet.add(matchJsonObject);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        for (Series series : seriesArrayList) {
+            mScheduleAdapterDataSet.add(series.getTitle());
+            mScheduleAdapterDataSet.addAll(series.getMatches());
         }
         /* Add one dummy series at the end */
         mScheduleAdapterDataSet.add("");
@@ -167,8 +166,9 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     @Override
     public void onMatchCardItemClick(int pos) {
         Intent intent = new Intent(ScheduleActivity.this, MatchActivity.class);
-        JSONObject jsonObject = (JSONObject) mScheduleAdapterDataSet.get(pos);
-        intent.putExtra(MatchActivity.KEY_MATCH_DATA, jsonObject.toString());
+        Match match = (Match) mScheduleAdapterDataSet.get(pos);
+        Gson gson = new Gson();
+        intent.putExtra(MatchActivity.KEY_MATCH_DATA, gson.toJson(match));
         startActivity(intent);
     }
 }

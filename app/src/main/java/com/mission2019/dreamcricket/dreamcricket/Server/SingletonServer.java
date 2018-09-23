@@ -5,6 +5,8 @@ import android.util.Log;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.mission2019.dreamcricket.dreamcricket.Schedule.Player;
+import com.mission2019.dreamcricket.dreamcricket.Schedule.Team;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,15 +125,22 @@ public class SingletonServer {
     public void getSchedule() {
         query(RemoteInterface.QUERY_SCHEDULE, "");
     }
-    public void getTeamForm(ArrayList<String> teamNames, String matchFormat) {
+    public void getTeamForm(ArrayList<Team> teams, String matchFormat) {
         JSONObject queryJSONObject = new JSONObject();
         try {
             queryJSONObject.put("format", matchFormat);
             JSONArray teamJSONArray = new JSONArray();
-            for (String teamName : teamNames) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("team_name", teamName);
-                teamJSONArray.put(jsonObject);
+            for (Team team : teams) {
+                JSONObject teamJson = new JSONObject();
+                teamJson.put("team_name", team.getName());
+                JSONArray squadJsonArray = new JSONArray();
+                for (Player player : team.getSquad()) {
+                    JSONObject playerJson = new JSONObject();
+                    playerJson.put("player_name", player.getName());
+                    squadJsonArray.put(playerJson);
+                }
+                teamJson.put("team_squad", squadJsonArray);
+                teamJSONArray.put(teamJson);
             }
             queryJSONObject.put("teams", teamJSONArray);
         } catch (JSONException e) {

@@ -2,10 +2,13 @@ package com.mission2019.dreamcricket.dreamcricket;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,7 +22,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private static final int ITEM_TYPE_MATCH = 1;
     private MatchCardItemClickListener mListener;
 
-    public ScheduleRecyclerViewAdapter(ArrayList<Object> scheduleDataSet, MatchCardItemClickListener listener) {
+    ScheduleRecyclerViewAdapter(ArrayList<Object> scheduleDataSet, MatchCardItemClickListener listener) {
         this.mScheduleDataSet = scheduleDataSet;
         mListener = listener;
     }
@@ -48,7 +51,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (viewType == ITEM_TYPE_SERIES) {
             ((SeriesViewHolder)holder).bindViews((String) mScheduleDataSet.get(position));
         } else if (viewType == ITEM_TYPE_MATCH) {
-            ((MatchViewHolder)holder).bindViews((JSONObject) mScheduleDataSet.get(position));
+            ((MatchViewHolder)holder).bindViews((Match) mScheduleDataSet.get(position));
         }
     }
     
@@ -56,7 +59,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public int getItemViewType(int position) {
         if(mScheduleDataSet.get(position) instanceof String) {
             return ITEM_TYPE_SERIES;
-        } else if (mScheduleDataSet.get(position) instanceof JSONObject) {
+        } else if (mScheduleDataSet.get(position) instanceof Match) {
             return ITEM_TYPE_MATCH;
         }
         return super.getItemViewType(position);
@@ -93,22 +96,14 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             mTimeTextView = matchView.findViewById(R.id.match_time_tv);
             matchView.setOnClickListener(this);
         }
-        void bindViews(JSONObject matchJsonObject) {
-            try {
-                String[] venue = matchJsonObject.getString("match_venue").split(",");
-                String[] title = matchJsonObject.getString("match_title").split(",");
-                String match_title = title[title.length-1] + " . " + venue[venue.length-1];
-                mTitleTextView.setText(match_title);
-                mTimeTextView.setText(Utility.convertEpochTime(matchJsonObject.getString("match_time")));
-
-                JSONArray teamJsonArray = matchJsonObject.getJSONArray("match_teams");
-                JSONObject teamAJsonObject = teamJsonArray.getJSONObject(0);
-                JSONObject teamBJsonObject = teamJsonArray.getJSONObject(1);
-                mTeamATextView.setText(teamAJsonObject.getString("team_short_name"));
-                mTeamBTextView.setText(teamBJsonObject.getString("team_short_name"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        void bindViews(Match match) {
+            String[] venue = match.getVenue().split(",");
+            String[] title = match.getTitle().split(",");
+            String match_title = title[title.length-1] + " . " + venue[venue.length-1];
+            mTitleTextView.setText(match_title);
+            mTimeTextView.setText(Utility.convertEpochTime(match.getTime()));
+            mTeamATextView.setText(match.getTeams().get(0).getShortName());
+            mTeamBTextView.setText(match.getTeams().get(1).getShortName());
         }
 
         @Override

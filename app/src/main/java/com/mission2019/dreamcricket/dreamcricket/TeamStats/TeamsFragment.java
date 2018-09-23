@@ -1,6 +1,7 @@
 package com.mission2019.dreamcricket.dreamcricket.TeamStats;
 
 import android.animation.LayoutTransition;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
 import com.mission2019.dreamcricket.dreamcricket.Server.JsonExtractor;
 import com.mission2019.dreamcricket.dreamcricket.Server.LocalInterface;
 import com.mission2019.dreamcricket.dreamcricket.MatchActivity;
@@ -24,12 +28,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class TeamsFragment extends Fragment implements SingletonServer.ServerEventListener {
     private static final String TAG = TeamsFragment.class.getSimpleName();
-    private JSONObject mMatchJSONObject;
-    private String mMatchFormat;
+    private Match mMatch;
 
     private static final String ADAPTER_TYPE_FORM = "ADAPTER_TYPE_FORM";
     private static final String ADAPTER_TYPE_MATCHES = "ADAPTER_TYPE_MATCHES";
@@ -76,12 +80,10 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String matchData = getArguments().getString(MatchActivity.KEY_MATCH_DATA);
-        try {
-            mMatchJSONObject = new JSONObject(matchData);
-            Log.e(TAG, mMatchJSONObject.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<Match>() {}.getType();
+        mMatch = gson.fromJson(matchData, type);
     }
 
     @Nullable
@@ -155,17 +157,10 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
         mTeamBTopBowlersRV.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        try {
-            JSONArray teamJsonArray = mMatchJSONObject.getJSONArray("match_teams");
-            mTeamATitle = teamJsonArray.getJSONObject(0).getString("team_name");
-            mTeamBTitle = teamJsonArray.getJSONObject(1).getString("team_name");
-            mTeamATitleTextView.setText(mTeamATitle);
-            mTeamBTitleTextView.setText(mTeamBTitle);
-
-            mMatchFormat = mMatchJSONObject.getString("match_format");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        mTeamATitle = mMatch.getTeams().get(0).getName();
+        mTeamBTitle = mMatch.getTeams().get(1).getName();
+        mTeamATitleTextView.setText(mTeamATitle);
+        mTeamBTitleTextView.setText(mTeamBTitle);
 
         mTeamATitleTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,9 +279,7 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
         String eventType = (String) args[0];
         switch (eventType) {
             case LocalInterface.EVENT_CONNECTION_SUCCESS: {
-                ArrayList<String> teams = new ArrayList<>();
-                teams.add(mTeamATitle); teams.add(mTeamBTitle);
-                mServer.getTeamForm(teams, mMatchFormat);
+                mServer.getTeamForm(mMatch.getTeams(), mMatch.getFormat());
                 break;
             }
             case LocalInterface.EVENT_CONNECTION_ERROR:
@@ -353,7 +346,7 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
                     break;
                 case ADAPTER_TYPE_MATCHES:
                     ((MatchesViewHolder) holder).bindViews(
-                            (MatchScorecard) mDataSet.get(position));
+                            (TeamMatchScorecard) mDataSet.get(position));
                     break;
                 case ADAPTER_TYPE_TOP_BATSMEN:
                     ((TopBatsmenViewHolder) holder).bindViews((JSONObject) mDataSet.get(position));
@@ -431,8 +424,8 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
                 mInningsFourTV = view.findViewById(R.id.team_matches_innings_4_tv);
             }
 
-            void bindViews(MatchScorecard recentMatches) {
-                for (MatchInningsScore inningsScore : recentMatches.getMatchInningsScores()) {
+            void bindViews(TeamMatchScorecard recentMatches) {
+                for (TeamMatchInningsScore inningsScore : recentMatches.getMatchInningsScores()) {
                     String inningsScoreStr = inningsScore.getTeamName() + " " +
                             inningsScore.getRuns() + "-" + inningsScore.getWickets() + " (" +
                             inningsScore.getOvers() + ")";
