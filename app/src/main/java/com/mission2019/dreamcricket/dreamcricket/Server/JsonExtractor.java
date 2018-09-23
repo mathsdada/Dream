@@ -5,6 +5,8 @@ import com.mission2019.dreamcricket.dreamcricket.Schedule.Player;
 import com.mission2019.dreamcricket.dreamcricket.Schedule.Schedule;
 import com.mission2019.dreamcricket.dreamcricket.Schedule.Series;
 import com.mission2019.dreamcricket.dreamcricket.Schedule.Team;
+import com.mission2019.dreamcricket.dreamcricket.TeamStats.BatsmanScore;
+import com.mission2019.dreamcricket.dreamcricket.TeamStats.BowlerScore;
 import com.mission2019.dreamcricket.dreamcricket.TeamStats.TeamMatchInningsScore;
 import com.mission2019.dreamcricket.dreamcricket.TeamStats.TeamMatchScorecard;
 import com.mission2019.dreamcricket.dreamcricket.TeamStats.TeamForm;
@@ -30,8 +32,12 @@ public class JsonExtractor {
 
             JSONArray teamFormDataJSONArray = teamStatsJSON.getJSONArray("form");
             JSONArray teamRecentMatchesJSONArray = teamStatsJSON.getJSONArray("recent_matches");
+            JSONArray teamBattingScoresJSONArray = teamStatsJSON.getJSONArray("top_batting_scores");
+            JSONArray teamBowlingScoresJSONArray = teamStatsJSON.getJSONArray("top_bowling_figures");
             teamStats.setTeamForm(JsonExtractorInternal.extractTeamForm(teamFormDataJSONArray));
             teamStats.setRecentMatchesScorecards(JsonExtractorInternal.extractTeamMatchScorecards(teamRecentMatchesJSONArray));
+            teamStats.setTopBattingScores(JsonExtractorInternal.extractTopBattingScores(teamBattingScoresJSONArray));
+            teamStats.setTopBowlingScores(JsonExtractorInternal.extractTopBowlingScores(teamBowlingScoresJSONArray));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -113,6 +119,35 @@ public class JsonExtractor {
                 recentMatches.setMatchScorecard(matchScorecard);
             }
             return recentMatches;
+        }
+
+        static ArrayList<BatsmanScore> extractTopBattingScores(JSONArray teamBattingScoresJSONArray) throws JSONException {
+            ArrayList<BatsmanScore> batsmanScores = new ArrayList<>();
+            for (int scoreIndex = 0; scoreIndex < teamBattingScoresJSONArray.length(); scoreIndex++) {
+                JSONObject scoreJson = teamBattingScoresJSONArray.getJSONObject(scoreIndex);
+                BatsmanScore batsmanScore = new BatsmanScore(
+                        scoreJson.getString("player_name"),
+                        scoreJson.getInt("runs_scored"),
+                        scoreJson.getInt("balls_played")
+                );
+                batsmanScores.add(batsmanScore);
+            }
+            return batsmanScores;
+        }
+
+        static ArrayList<BowlerScore> extractTopBowlingScores(JSONArray teamBowlingScoresJSONArray) throws JSONException {
+            ArrayList<BowlerScore> bowlerScores = new ArrayList<>();
+            for (int scoreIndex = 0; scoreIndex < teamBowlingScoresJSONArray.length(); scoreIndex++) {
+                JSONObject scoreJson = teamBowlingScoresJSONArray.getJSONObject(scoreIndex);
+                BowlerScore bowlerScore = new BowlerScore(
+                        scoreJson.getString("player_name"),
+                        scoreJson.getInt("wickets_taken"),
+                        scoreJson.getInt("runs_given"),
+                        scoreJson.getString("overs_bowled")
+                );
+                bowlerScores.add(bowlerScore);
+            }
+            return bowlerScores;
         }
     }
 }

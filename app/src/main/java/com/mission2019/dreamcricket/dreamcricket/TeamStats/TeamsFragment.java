@@ -111,51 +111,8 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
 
         initializeTeamStatsForm();
         initializeTeamStatsRecentMatches();
-
-        JSONObject jsonObject = new JSONObject();
-        /* Top Batsman */
-        mTeamAStatsTopBatsmenData = new ArrayList<>();
-        for (int i=0; i < 10; i++) {
-            mTeamAStatsTopBatsmenData.add(jsonObject);
-        }
-        mTeamAStatsTopBatsmenRVAdapter = new TeamRecylerviewAdapter(mTeamAStatsTopBatsmenData,
-                ADAPTER_TYPE_TOP_BATSMEN);
-        mTeamATopBatsmenRV.setAdapter(mTeamAStatsTopBatsmenRVAdapter);
-        mTeamATopBatsmenRV.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        /* Top Bowlers */
-        mTeamAStatsTopBowlersData = new ArrayList<>();
-        for (int i=0; i < 10; i++) {
-            mTeamAStatsTopBowlersData.add(jsonObject);
-        }
-        mTeamAStatsTopBowlersRVAdapter = new TeamRecylerviewAdapter(mTeamAStatsTopBowlersData,
-                ADAPTER_TYPE_TOP_BOWLERS);
-        mTeamATopBowlersRV.setAdapter(mTeamAStatsTopBowlersRVAdapter);
-        mTeamATopBowlersRV.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        /* Top Batsman */
-        mTeamBStatsTopBatsmenData = new ArrayList<>();
-        for (int i=0; i < 10; i++) {
-            mTeamBStatsTopBatsmenData.add(jsonObject);
-        }
-        mTeamBStatsTopBatsmenRVAdapter = new TeamRecylerviewAdapter(mTeamBStatsTopBatsmenData,
-                ADAPTER_TYPE_TOP_BATSMEN);
-        mTeamBTopBatsmenRV.setAdapter(mTeamBStatsTopBatsmenRVAdapter);
-        mTeamBTopBatsmenRV.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
-        /* Top Bowlers */
-        mTeamBStatsTopBowlersData = new ArrayList<>();
-        for (int i=0; i < 10; i++) {
-            mTeamBStatsTopBowlersData.add(jsonObject);
-        }
-        mTeamBStatsTopBowlersRVAdapter = new TeamRecylerviewAdapter(mTeamBStatsTopBowlersData,
-                ADAPTER_TYPE_TOP_BOWLERS);
-        mTeamBTopBowlersRV.setAdapter(mTeamBStatsTopBowlersRVAdapter);
-        mTeamBTopBowlersRV.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        initializeTeamStatsTopBatFigures();
+        initializeTeamStatsTopBowlFigures();
 
         mTeamATitle = mMatch.getTeams().get(0).getName();
         mTeamBTitle = mMatch.getTeams().get(1).getName();
@@ -229,6 +186,38 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
+    private void initializeTeamStatsTopBatFigures() {
+        mTeamAStatsTopBatsmenData = new ArrayList<>();
+        mTeamAStatsTopBatsmenRVAdapter = new TeamRecylerviewAdapter(mTeamAStatsTopBatsmenData,
+                ADAPTER_TYPE_TOP_BATSMEN);
+        mTeamATopBatsmenRV.setAdapter(mTeamAStatsTopBatsmenRVAdapter);
+        mTeamATopBatsmenRV.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        mTeamBStatsTopBatsmenData = new ArrayList<>();
+        mTeamBStatsTopBatsmenRVAdapter = new TeamRecylerviewAdapter(mTeamBStatsTopBatsmenData,
+                ADAPTER_TYPE_TOP_BATSMEN);
+        mTeamBTopBatsmenRV.setAdapter(mTeamBStatsTopBatsmenRVAdapter);
+        mTeamBTopBatsmenRV.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    private void initializeTeamStatsTopBowlFigures() {
+        mTeamAStatsTopBowlersData = new ArrayList<>();
+        mTeamAStatsTopBowlersRVAdapter = new TeamRecylerviewAdapter(mTeamAStatsTopBowlersData,
+                ADAPTER_TYPE_TOP_BOWLERS);
+        mTeamATopBowlersRV.setAdapter(mTeamAStatsTopBowlersRVAdapter);
+        mTeamATopBowlersRV.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        mTeamBStatsTopBowlersData = new ArrayList<>();
+        mTeamBStatsTopBowlersRVAdapter = new TeamRecylerviewAdapter(mTeamBStatsTopBowlersData,
+                ADAPTER_TYPE_TOP_BOWLERS);
+        mTeamBTopBowlersRV.setAdapter(mTeamBStatsTopBowlersRVAdapter);
+        mTeamBTopBowlersRV.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    }
+
     private void updateTeamFormOnUI(String teamName, TeamForm teamForm) {
         ArrayList<Object> dataSet;
         final TeamRecylerviewAdapter adapter;
@@ -269,9 +258,51 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
         });
     }
 
+    private void updateTeamTopBatFiguresOnUI(String teamName, ArrayList<BatsmanScore> topBattingScores) {
+        ArrayList<Object> dataSet;
+        final TeamRecylerviewAdapter adapter;
+        if (teamName.equals(mTeamATitle)) {
+            dataSet = mTeamAStatsTopBatsmenData;
+            adapter = mTeamAStatsTopBatsmenRVAdapter;
+        } else {
+            dataSet = mTeamBStatsTopBatsmenData;
+            adapter = mTeamBStatsTopBatsmenRVAdapter;
+        }
+        dataSet.clear();
+        dataSet.addAll(topBattingScores);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void updateTeamTopBowlFiguresOnUI(String teamName, ArrayList<BowlerScore> topBowlingScores) {
+        ArrayList<Object> dataSet;
+        final TeamRecylerviewAdapter adapter;
+        if (teamName.equals(mTeamATitle)) {
+            dataSet = mTeamAStatsTopBowlersData;
+            adapter = mTeamAStatsTopBowlersRVAdapter;
+        } else {
+            dataSet = mTeamBStatsTopBowlersData;
+            adapter = mTeamBStatsTopBowlersRVAdapter;
+        }
+        dataSet.clear();
+        dataSet.addAll(topBowlingScores);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     private void updateTeamStatsOnUI(TeamStats teamStats) {
         updateTeamFormOnUI(teamStats.getTeamName(), teamStats.getTeamForm());
         updateTeamRecentMatchesOnUI(teamStats.getTeamName(), teamStats.getRecentMatchesScorecards());
+        updateTeamTopBatFiguresOnUI(teamStats.getTeamName(), teamStats.getTopBattingScores());
+        updateTeamTopBowlFiguresOnUI(teamStats.getTeamName(), teamStats.getTopBowlingScores());
     }
 
     @Override
@@ -349,10 +380,10 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
                             (TeamMatchScorecard) mDataSet.get(position));
                     break;
                 case ADAPTER_TYPE_TOP_BATSMEN:
-                    ((TopBatsmenViewHolder) holder).bindViews((JSONObject) mDataSet.get(position));
+                    ((TopBatsmenViewHolder) holder).bindViews((BatsmanScore) mDataSet.get(position));
                     break;
                 case ADAPTER_TYPE_TOP_BOWLERS:
-                    ((TopBowlersViewHolder) holder).bindViews((JSONObject) mDataSet.get(position));
+                    ((TopBowlersViewHolder) holder).bindViews((BowlerScore) mDataSet.get(position));
                     break;
             }
         }
@@ -377,7 +408,6 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
                 String oppTeam = teamMatchOutcome.getOppTeam();
 
                 mOppTeamTextView.setText("vs "+ oppTeam);
-                Log.e(TAG, matchResult + " " + oppTeam);
                 switch (matchResult) {
                     case "WIN" : {
                         matchResult = "W";
@@ -457,23 +487,35 @@ public class TeamsFragment extends Fragment implements SingletonServer.ServerEve
         }
 
         private class TopBatsmenViewHolder extends RecyclerView.ViewHolder {
-
+            private TextView mBatsmanNameTV;
+            private TextView mBatsmanScoreTV;
             TopBatsmenViewHolder(View view) {
                 super(view);
+                mBatsmanNameTV = view.findViewById(R.id.batsman_name_tv);
+                mBatsmanScoreTV = view.findViewById(R.id.batsman_score_tv);
             }
 
-            void bindViews(JSONObject teamForm) {
+            void bindViews(BatsmanScore batsmanScore) {
+                mBatsmanNameTV.setText(batsmanScore.getPlayerName());
+                mBatsmanScoreTV.setText(
+                        String.format("%d (%d)", batsmanScore.getRuns(), batsmanScore.getBalls()));
             }
 
         }
 
         private class TopBowlersViewHolder extends RecyclerView.ViewHolder {
-
+            private TextView mBowlerNameTV;
+            private TextView mBowlerScoreTV;
             TopBowlersViewHolder(View view) {
                 super(view);
+                mBowlerNameTV = view.findViewById(R.id.bowler_name_tv);
+                mBowlerScoreTV = view.findViewById(R.id.bowler_score_tv);
             }
 
-            void bindViews(JSONObject teamForm) {
+            void bindViews(BowlerScore bowlerScore) {
+                mBowlerNameTV.setText(bowlerScore.getName());
+                mBowlerScoreTV.setText(String.format("%d-%d (%s)", bowlerScore.getWickets(),
+                        bowlerScore.getRuns(), bowlerScore.getOvers()));
             }
 
         }

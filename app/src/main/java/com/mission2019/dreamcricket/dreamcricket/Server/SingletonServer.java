@@ -98,7 +98,7 @@ public class SingletonServer {
         });
     }
 
-    private void query(String type, String data) {
+    private void query(String type, Object data) {
         JSONObject query_json = new JSONObject();
         try {
             query_json.put("type", type);
@@ -146,8 +146,7 @@ public class SingletonServer {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        query(RemoteInterface.QUERY_TEAM_STATS, queryJSONObject.toString());
+        query(RemoteInterface.QUERY_TEAM_STATS, queryJSONObject);
     }
 
     //    private void processScheduleJsonArray(JSONArray seriesJsonArray) {

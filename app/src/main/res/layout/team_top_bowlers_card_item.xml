@@ -17,6 +17,7 @@
         <TextView
             android:id="@+id/bowler_name_tv"
             android:text="Sunil Narine"
+            android:maxLines="1"
             android:textColor="@color/colorPrimary"
             android:textAlignment="center"
             app:layout_constraintTop_toTopOf="parent"

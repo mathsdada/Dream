@@ -98,7 +98,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
         void bindViews(Match match) {
             String[] venue = match.getVenue().split(",");
-            String[] title = match.getTitle().split(",");
+            String[] title = match.getTitle().split(",", 2);
             String match_title = title[title.length-1] + " . " + venue[venue.length-1];
             mTitleTextView.setText(match_title);
             mTimeTextView.setText(Utility.convertEpochTime(match.getTime()));

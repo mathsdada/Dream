@@ -17,6 +17,7 @@
         <TextView
             android:id="@+id/batsman_name_tv"
             android:text="Virat Kohli"
+            android:maxLines="1"
             android:textColor="@color/colorPrimary"
             android:textAlignment="center"
             app:layout_constraintTop_toTopOf="parent"
