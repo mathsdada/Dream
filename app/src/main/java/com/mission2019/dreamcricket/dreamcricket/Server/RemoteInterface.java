@@ -2,7 +2,7 @@ package com.mission2019.dreamcricket.dreamcricket.Server;
 
 public class RemoteInterface
 {
-    // Query Types
+    // APIQuery Types
     public static final String QUERY_SCHEDULE = "0";
     public static final String QUERY_TEAM_STATS = "1";
 

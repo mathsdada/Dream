@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,9 @@ import android.view.MenuItem;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleSeries;
+import com.mission2019.dreamcricket.dreamcricket.Rest.API;
 import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
 import com.mission2019.dreamcricket.dreamcricket.Schedule.Schedule;
 import com.mission2019.dreamcricket.dreamcricket.Schedule.Series;
@@ -29,15 +33,18 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class ScheduleActivity extends AppCompatActivity implements SingletonServer.ServerEventListener, ScheduleRecyclerViewAdapter.MatchCardItemClickListener {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyclerViewAdapter.MatchCardItemClickListener {
     public static final String TAG = ScheduleActivity.class.getSimpleName();
     private static final String PERSIST_KEY_SCHEDULE = "PERSIST_KEY_SCHEDULE";
     private static final String PERSIST_KEY_SCHEDULE_DATE = "PERSIST_KEY_SCHEDULE_DATE";
     private String dateFormat = "dd-MM-yyyy";
-    private Schedule mSchedule;
+    private ScheduleResponse mSchedule;
     private ArrayList<Object> mScheduleAdapterDataSet;
     private ScheduleRecyclerViewAdapter mScheduleRecyclerViewAdapter;
-    private SingletonServer mServer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +53,6 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mServer = SingletonServer.getInstance();
         mScheduleAdapterDataSet = new ArrayList<>();
         RecyclerView recyclerViewSchedule = findViewById(R.id.recyclerview_schedule);
         recyclerViewSchedule.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
@@ -74,7 +80,7 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         if(savedDate.equals(currentDate)) {
             String scheduleJson = sharedPref.getString(PERSIST_KEY_SCHEDULE, "");
             Gson gson = new Gson();
-            Type type = new TypeToken<Schedule>() {}.getType();
+            Type type = new TypeToken<ScheduleResponse>() {}.getType();
             if (scheduleJson.length() != 0) {
                 mSchedule = gson.fromJson(scheduleJson, type);
             }
@@ -88,10 +94,10 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
     protected void onResume() {
         super.onResume();
         restoreInstanceState();
-        if (mSchedule == null) {
-            mServer.connect(this);
+        if (mSchedule != null) {
+            updateScheduleOnUI(mSchedule.getSeriesList());
         } else {
-            updateScheduleOnUI(mSchedule.getSerieses());
+            getSchedule();
         }
     }
 
@@ -101,7 +107,6 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         if (mSchedule != null) {
             saveInstanceState();
         }
-        mServer.disconnect();
     }
 
     @Override
@@ -126,35 +131,29 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onServerEvent(final Object... args) {
-        String eventType = (String) args[0];
-        switch (eventType) {
-            case LocalInterface.EVENT_CONNECTION_SUCCESS: {
-                mServer.getSchedule();
-                break;
+    public void getSchedule() {
+        API.query().getSchedule(Config.API_KEY).enqueue(new Callback<ScheduleResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ScheduleResponse> call,
+                                   @NonNull Response<ScheduleResponse> response) {
+                Log.e(TAG, call.request().toString());
+                mSchedule = response.body();
+                updateScheduleOnUI(mSchedule.getSeriesList());
             }
-            case LocalInterface.EVENT_CONNECTION_ERROR:
-            case LocalInterface.EVENT_CONNECTION_TIMEOUT: {
-                // TODO: Display SnackBar with option Retry so that user can retry to connect again
-                break;
-            }
-            case LocalInterface.EVENT_SCHEDULE: {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSchedule = JsonExtractor.extractSchedule((JSONArray) args[1]);
-                        updateScheduleOnUI(mSchedule.getSerieses());
-                    }
-                });
-                break;
-            }
-        }
-    }
 
-    private void updateScheduleOnUI(ArrayList<Series> seriesArrayList) {
+            @Override
+            public void onFailure(Call<ScheduleResponse> call, Throwable t) {
+                Log.e(TAG, t.toString());
+            }
+        });
+    }
+    private void updateScheduleOnUI(ArrayList<ScheduleSeries> seriesArrayList) {
+        if (seriesArrayList == null) {
+            Log.e(TAG, "updateScheduleOnUI : seriesArrayList is null!!!!");
+            return;
+        }
         mScheduleAdapterDataSet.clear();
-        for (Series series : seriesArrayList) {
+        for (ScheduleSeries series : seriesArrayList) {
             mScheduleAdapterDataSet.add(series.getTitle());
             mScheduleAdapterDataSet.addAll(series.getMatches());
         }
@@ -165,10 +164,11 @@ public class ScheduleActivity extends AppCompatActivity implements SingletonServ
 
     @Override
     public void onMatchCardItemClick(int pos) {
-        Intent intent = new Intent(ScheduleActivity.this, MatchActivity.class);
-        Match match = (Match) mScheduleAdapterDataSet.get(pos);
-        Gson gson = new Gson();
-        intent.putExtra(MatchActivity.KEY_MATCH_DATA, gson.toJson(match));
-        startActivity(intent);
+        Log.e(TAG, "onMatchCardItemClick : pos = " + pos);
+//        Intent intent = new Intent(ScheduleActivity.this, MatchActivity.class);
+//        Match match = (Match) mScheduleAdapterDataSet.get(pos);
+//        Gson gson = new Gson();
+//        intent.putExtra(MatchActivity.KEY_MATCH_DATA, gson.toJson(match));
+//        startActivity(intent);
     }
 }

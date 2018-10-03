@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleMatch;
 import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
 
 import org.json.JSONArray;
@@ -51,7 +52,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (viewType == ITEM_TYPE_SERIES) {
             ((SeriesViewHolder)holder).bindViews((String) mScheduleDataSet.get(position));
         } else if (viewType == ITEM_TYPE_MATCH) {
-            ((MatchViewHolder)holder).bindViews((Match) mScheduleDataSet.get(position));
+            ((MatchViewHolder)holder).bindViews((ScheduleMatch) mScheduleDataSet.get(position));
         }
     }
     
@@ -59,7 +60,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public int getItemViewType(int position) {
         if(mScheduleDataSet.get(position) instanceof String) {
             return ITEM_TYPE_SERIES;
-        } else if (mScheduleDataSet.get(position) instanceof Match) {
+        } else if (mScheduleDataSet.get(position) instanceof ScheduleMatch) {
             return ITEM_TYPE_MATCH;
         }
         return super.getItemViewType(position);
@@ -96,7 +97,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             mTimeTextView = matchView.findViewById(R.id.match_time_tv);
             matchView.setOnClickListener(this);
         }
-        void bindViews(Match match) {
+        void bindViews(ScheduleMatch match) {
             String[] venue = match.getVenue().split(",");
             String[] title = match.getTitle().split(",", 2);
             String match_title = title[title.length-1] + " . " + venue[venue.length-1];

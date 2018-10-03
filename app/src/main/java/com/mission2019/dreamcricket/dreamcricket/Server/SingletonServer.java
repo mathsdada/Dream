@@ -106,7 +106,7 @@ public class SingletonServer {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e(TAG, "Sending Query to Server " + query_json.toString());
+        Log.e(TAG, "Sending APIQuery to Server " + query_json.toString());
         mSocket.emit("query", query_json.toString());
     }
 
