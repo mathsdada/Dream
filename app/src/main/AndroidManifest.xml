@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ScheduleActivity"
+            android:name=".Activity.ScheduleActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,13 +22,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MatchActivity"
+            android:name=".Activity.MatchActivity"
             android:label="@string/title_activity_match"
-            android:parentActivityName=".ScheduleActivity"
+            android:parentActivityName=".Activity.ScheduleActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mission2019.dreamcricket.dreamcricket.ScheduleActivity" />
+                android:value="com.mission2019.dreamcricket.dreamcricket.Activity.ScheduleActivity" />
         </activity>
     </application>
 

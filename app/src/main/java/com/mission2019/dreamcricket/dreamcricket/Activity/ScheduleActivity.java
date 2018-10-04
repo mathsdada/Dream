@@ -1,7 +1,6 @@
-package com.mission2019.dreamcricket.dreamcricket;
+package com.mission2019.dreamcricket.dreamcricket.Activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,19 +15,13 @@ import android.view.MenuItem;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleSeries;
+import com.mission2019.dreamcricket.dreamcricket.R;
 import com.mission2019.dreamcricket.dreamcricket.Rest.API;
-import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
-import com.mission2019.dreamcricket.dreamcricket.Schedule.Schedule;
-import com.mission2019.dreamcricket.dreamcricket.Schedule.Series;
-import com.mission2019.dreamcricket.dreamcricket.Server.JsonExtractor;
-import com.mission2019.dreamcricket.dreamcricket.Server.LocalInterface;
-import com.mission2019.dreamcricket.dreamcricket.Server.SingletonServer;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mission2019.dreamcricket.dreamcricket.Adapter.ScheduleRecyclerViewAdapter;
+import com.mission2019.dreamcricket.dreamcricket.Common.Utility;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

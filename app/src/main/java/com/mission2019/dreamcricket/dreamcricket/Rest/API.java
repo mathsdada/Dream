@@ -1,6 +1,6 @@
 package com.mission2019.dreamcricket.dreamcricket.Rest;
 
-import com.mission2019.dreamcricket.dreamcricket.Config;
+import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

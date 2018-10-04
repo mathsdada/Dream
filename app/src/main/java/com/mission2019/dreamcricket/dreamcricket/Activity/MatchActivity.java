@@ -1,4 +1,4 @@
-package com.mission2019.dreamcricket.dreamcricket;
+package com.mission2019.dreamcricket.dreamcricket.Activity;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -15,14 +15,12 @@ import android.view.MenuItem;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mission2019.dreamcricket.dreamcricket.PlayerStats.PlayersFragment;
-import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
-import com.mission2019.dreamcricket.dreamcricket.TeamStats.TeamsFragment;
-import com.mission2019.dreamcricket.dreamcricket.VenueStats.VenueFragment;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mission2019.dreamcricket.dreamcricket.Custom.CustomViewPager;
+import com.mission2019.dreamcricket.dreamcricket.Fragment.PlayersFragment;
+import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleMatch;
+import com.mission2019.dreamcricket.dreamcricket.R;
+import com.mission2019.dreamcricket.dreamcricket.Fragment.TeamsFragment;
+import com.mission2019.dreamcricket.dreamcricket.Fragment.VenueFragment;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class MatchActivity extends AppCompatActivity {
     public static final String KEY_MATCH_DATA = "KEY_MATCH_DATA";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private CustomViewPager mViewPager;
-    private Match mMatch;
+    private ScheduleMatch mMatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,7 @@ public class MatchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String data = intent.getStringExtra(KEY_MATCH_DATA);
         Gson gson = new Gson();
-        Type type = new TypeToken<Match>() {}.getType();
+        Type type = new TypeToken<ScheduleMatch>() {}.getType();
         mMatch = gson.fromJson(data, type);
 
         setupActionBar();

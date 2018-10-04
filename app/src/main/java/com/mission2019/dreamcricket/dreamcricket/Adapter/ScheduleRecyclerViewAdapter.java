@@ -1,19 +1,15 @@
-package com.mission2019.dreamcricket.dreamcricket;
+package com.mission2019.dreamcricket.dreamcricket.Adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleMatch;
-import com.mission2019.dreamcricket.dreamcricket.Schedule.Match;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mission2019.dreamcricket.dreamcricket.R;
+import com.mission2019.dreamcricket.dreamcricket.Common.Utility;
 
 import java.util.ArrayList;
 
@@ -23,7 +19,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private static final int ITEM_TYPE_MATCH = 1;
     private MatchCardItemClickListener mListener;
 
-    ScheduleRecyclerViewAdapter(ArrayList<Object> scheduleDataSet, MatchCardItemClickListener listener) {
+    public ScheduleRecyclerViewAdapter(ArrayList<Object> scheduleDataSet, MatchCardItemClickListener listener) {
         this.mScheduleDataSet = scheduleDataSet;
         mListener = listener;
     }
@@ -36,10 +32,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_TYPE_SERIES) {
-            View seriesView = LayoutInflater.from(parent.getContext()).inflate(R.layout.series_card_item, parent, false);
+            View seriesView = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_activity_series_card, parent, false);
             return new SeriesViewHolder(seriesView);
         } else if (viewType == ITEM_TYPE_MATCH) {
-            View matchView = LayoutInflater.from(parent.getContext()).inflate(R.layout.match_card_item, parent, false);
+            View matchView = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_activity_match_card, parent, false);
             return new MatchViewHolder(matchView);
         } else {
             return null;
