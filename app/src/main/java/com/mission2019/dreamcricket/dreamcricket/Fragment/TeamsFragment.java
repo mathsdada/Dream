@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mission2019.dreamcricket.dreamcricket.Adapter.TeamStatsCategoriesRecyclerViewAdapter;
 import com.mission2019.dreamcricket.dreamcricket.Common.Config;
+import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleMatch;
 import com.mission2019.dreamcricket.dreamcricket.Activity.MatchActivity;
 import com.mission2019.dreamcricket.dreamcricket.R;
@@ -81,9 +82,9 @@ public class TeamsFragment extends Fragment {
             }
         });
 
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.HORIZONTAL));
         mCategoriesRecyclerViewAdapter = new TeamStatsCategoriesRecyclerViewAdapter(mCategories, null);
         recyclerView.setAdapter(mCategoriesRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new StickyHeaderItemDecoration(mCategoriesRecyclerViewAdapter));
     }
 }

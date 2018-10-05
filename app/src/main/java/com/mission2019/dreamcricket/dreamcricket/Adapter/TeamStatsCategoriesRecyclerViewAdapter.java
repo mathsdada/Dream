@@ -9,11 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
 import com.mission2019.dreamcricket.dreamcricket.R;
 
 import java.util.ArrayList;
 
-public class TeamStatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TeamStatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements StickyHeaderItemDecoration.StickyHeaderInterface{
     private ArrayList<String> mCategories;
     private OnCategoryClickListener mClickListener;
     private static final int ITEM_TYPE_CATEGORY_HEAD = 0;
@@ -76,5 +77,33 @@ public class TeamStatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter
             mCategoryTextView.setText(category);
         }
 
+    }
+
+    @Override
+    public int getHeaderPositionForItem(int itemPosition) {
+        int headerPosition = 0;
+        do {
+            if (this.isHeader(itemPosition)) {
+                headerPosition = itemPosition;
+                break;
+            }
+            itemPosition -= 1;
+        } while (itemPosition >= 0);
+        return headerPosition;
+    }
+
+    @Override
+    public int getHeaderLayout(int headerPosition) {
+        return R.layout.team_stats_fragment_category_header;
+    }
+
+    @Override
+    public void bindHeaderData(View header, int headerPosition) {
+        ((TextView)header).setText(mCategories.get(headerPosition));
+    }
+
+    @Override
+    public boolean isHeader(int itemPosition) {
+        return ITEM_TYPE_CATEGORY_HEAD == getItemViewType(itemPosition);
     }
 }
