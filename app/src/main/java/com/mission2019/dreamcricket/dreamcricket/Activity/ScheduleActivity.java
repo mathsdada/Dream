@@ -1,6 +1,7 @@
 package com.mission2019.dreamcricket.dreamcricket.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mission2019.dreamcricket.dreamcricket.Common.Config;
+import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleMatch;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleSeries;
 import com.mission2019.dreamcricket.dreamcricket.R;
@@ -158,10 +160,10 @@ public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyc
     @Override
     public void onMatchCardItemClick(int pos) {
         Log.e(TAG, "onMatchCardItemClick : pos = " + pos);
-//        Intent intent = new Intent(ScheduleActivity.this, MatchActivity.class);
-//        Match match = (Match) mScheduleAdapterDataSet.get(pos);
-//        Gson gson = new Gson();
-//        intent.putExtra(MatchActivity.KEY_MATCH_DATA, gson.toJson(match));
-//        startActivity(intent);
+        Intent intent = new Intent(ScheduleActivity.this, MatchActivity.class);
+        ScheduleMatch match = (ScheduleMatch) mScheduleAdapterDataSet.get(pos);
+        Gson gson = new Gson();
+        intent.putExtra(MatchActivity.KEY_MATCH_DATA, gson.toJson(match));
+        startActivity(intent);
     }
 }
