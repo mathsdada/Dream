@@ -87,8 +87,8 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView mTitleTextView, mTimeTextView;
         MatchViewHolder(View matchView) {
             super(matchView);
-            mTeamATextView = matchView.findViewById(R.id.team_a_tv);
-            mTeamBTextView = matchView.findViewById(R.id.team_b_tv);
+            mTeamATextView = matchView.findViewById(R.id.team_one_tv);
+            mTeamBTextView = matchView.findViewById(R.id.team_two_tv);
             mTitleTextView = matchView.findViewById(R.id.match_title_tv);
             mTimeTextView = matchView.findViewById(R.id.match_time_tv);
             matchView.setOnClickListener(this);
@@ -99,8 +99,8 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             String match_title = title[title.length-1] + " . " + venue[venue.length-1];
             mTitleTextView.setText(match_title);
             mTimeTextView.setText(Utility.convertEpochTime(match.getTime()));
-            mTeamATextView.setText(match.getTeams().get(0).getShortName());
-            mTeamBTextView.setText(match.getTeams().get(1).getShortName());
+            mTeamATextView.setText(match.getTeams().get(0).getName());
+            mTeamBTextView.setText(match.getTeams().get(1).getName());
         }
 
         @Override
