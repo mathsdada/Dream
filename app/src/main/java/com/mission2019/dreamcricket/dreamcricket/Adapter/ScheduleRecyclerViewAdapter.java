@@ -35,11 +35,9 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (viewType == ITEM_TYPE_SERIES) {
             View seriesView = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_activity_series_card, parent, false);
             return new SeriesViewHolder(seriesView);
-        } else if (viewType == ITEM_TYPE_MATCH) {
+        } else {
             View matchView = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_activity_match_card, parent, false);
             return new MatchViewHolder(matchView);
-        } else {
-            return null;
         }
     }
 
@@ -48,7 +46,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         int viewType = getItemViewType(position);
         if (viewType == ITEM_TYPE_SERIES) {
             ((SeriesViewHolder)holder).bindViews((String) mScheduleDataSet.get(position));
-        } else if (viewType == ITEM_TYPE_MATCH) {
+        } else {
             ((MatchViewHolder)holder).bindViews((ScheduleMatch) mScheduleDataSet.get(position));
         }
     }
@@ -57,10 +55,9 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public int getItemViewType(int position) {
         if(mScheduleDataSet.get(position) instanceof String) {
             return ITEM_TYPE_SERIES;
-        } else if (mScheduleDataSet.get(position) instanceof ScheduleMatch) {
+        } else {
             return ITEM_TYPE_MATCH;
         }
-        return super.getItemViewType(position);
     }
 
     @Override
