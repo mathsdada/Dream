@@ -9,22 +9,23 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
+import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.R;
 
 import java.util.ArrayList;
 
-public class TeamStatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements StickyHeaderItemDecoration.StickyHeaderInterface{
-    private ArrayList<String> mCategories;
-    private OnCategoryClickListener mClickListener;
-    private static final int ITEM_TYPE_CATEGORY_HEAD = 0;
-    private static final int ITEM_TYPE_CATEGORY = 1;
+public class PlayerStatsSquadRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements StickyHeaderItemDecoration.StickyHeaderInterface{
+    private ArrayList<Object> mSquadDataset;
+    private onPlayerClickListener mClickListener;
+    private static final int ITEM_TYPE_ROLE = 0;
+    private static final int ITEM_TYPE_PLAYER = 1;
 
-    public interface OnCategoryClickListener {
-        void onCategoryItemClick(int pos);
+    public interface onPlayerClickListener {
+        void onPlayerClick(int pos);
     }
 
-    public TeamStatsCategoriesRecyclerViewAdapter(ArrayList<String> categories, OnCategoryClickListener clickListener) {
-        mCategories = categories;
+    public PlayerStatsSquadRecyclerViewAdapter(ArrayList<Object> squadDataset, onPlayerClickListener clickListener) {
+        mSquadDataset = squadDataset;
         mClickListener = clickListener;
     }
 
@@ -32,72 +33,68 @@ public class TeamStatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if (viewType == ITEM_TYPE_CATEGORY) {
+        if (viewType == ITEM_TYPE_PLAYER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_stats_fragment_category, parent, false);
-            return new CategoryViewHolder(view);
+            return new PlayerViewHolder(view);
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_stats_fragment_category_header, parent, false);
-            return new HeaderViewHolder(view);
+            return new RoleViewHolder(view);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (ITEM_TYPE_CATEGORY_HEAD == getItemViewType(position)) {
-            ((HeaderViewHolder)holder).bindViews(mCategories.get(position));
+        if (ITEM_TYPE_ROLE == getItemViewType(position)) {
+            ((RoleViewHolder)holder).bindViews((String) mSquadDataset.get(position));
         } else {
-            ((CategoryViewHolder) holder).bindViews(mCategories.get(position));
+            ((PlayerViewHolder) holder).bindViews((SchedulePlayer) mSquadDataset.get(position));
         }
     }
 
     @Override
     public int getItemCount() {
-        return mCategories.size();
+        return mSquadDataset.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        switch (mCategories.get(position)) {
-            case "Recent Matches":
-            case "Batting Records":
-            case "Bowling Records":
-            case "Head to Head Records":
-                return ITEM_TYPE_CATEGORY_HEAD;
-            default:
-                return ITEM_TYPE_CATEGORY;
-
+        Object object = mSquadDataset.get(position);
+        if(object instanceof String) {
+            return ITEM_TYPE_ROLE;
+        } else {
+            return ITEM_TYPE_PLAYER;
         }
     }
 
-    private class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class PlayerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mCategoryTextView;
 
-        CategoryViewHolder(View view) {
+        PlayerViewHolder(View view) {
             super(view);
             mCategoryTextView = view.findViewById(R.id.category_tv);
             mCategoryTextView.setOnClickListener(this);
         }
 
-        void bindViews(String category) {
-            mCategoryTextView.setText(category);
+        void bindViews(SchedulePlayer player) {
+            mCategoryTextView.setText(player.getName());
         }
 
         @Override
         public void onClick(View v) {
-            mClickListener.onCategoryItemClick(getAdapterPosition());
+            mClickListener.onPlayerClick(getAdapterPosition());
         }
     }
 
-    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+    private class RoleViewHolder extends RecyclerView.ViewHolder {
         private TextView mHeaderTextView;
 
-        HeaderViewHolder(View view) {
+        RoleViewHolder(View view) {
             super(view);
             mHeaderTextView = view.findViewById(R.id.category_header_tv);
         }
 
-        void bindViews(String category) {
-            mHeaderTextView.setText(category);
+        void bindViews(String role) {
+            mHeaderTextView.setText(role);
         }
 
     }
@@ -123,11 +120,11 @@ public class TeamStatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter
     @Override
     public void bindHeaderData(View header, int headerPosition) {
         TextView view = header.findViewById(R.id.category_header_tv);
-        view.setText(mCategories.get(headerPosition));
+        view.setText((String)mSquadDataset.get(headerPosition));
     }
 
     @Override
     public boolean isHeader(int itemPosition) {
-        return ITEM_TYPE_CATEGORY_HEAD == getItemViewType(itemPosition);
+        return ITEM_TYPE_ROLE == getItemViewType(itemPosition);
     }
 }

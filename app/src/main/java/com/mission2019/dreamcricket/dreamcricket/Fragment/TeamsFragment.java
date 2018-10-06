@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mission2019.dreamcricket.dreamcricket.Adapter.TeamStatsCategoriesRecyclerViewAdapter;
@@ -25,12 +27,13 @@ import com.mission2019.dreamcricket.dreamcricket.R;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class TeamsFragment extends Fragment {
+public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecyclerViewAdapter.OnCategoryClickListener {
     private static final String TAG = TeamsFragment.class.getSimpleName();
     private ScheduleMatch mScheduleMatch;
     private String mCurrentTeam;
     private ArrayList<String> mCategories = Config.teamStatsCategories;
     private TeamStatsCategoriesRecyclerViewAdapter mCategoriesRecyclerViewAdapter;
+    private RecyclerView mRecyclerView;
     public TeamsFragment() {
     }
 
@@ -55,7 +58,7 @@ public class TeamsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         final MaterialButton mTeamAButton = view.findViewById(R.id.team_a_button);
         final MaterialButton mTeamBButton = view.findViewById(R.id.team_b_button);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview_team_stats_categories);
+        mRecyclerView = view.findViewById(R.id.recyclerview_team_stats_categories);
 
         mTeamAButton.setText(mScheduleMatch.getTeams().get(0).getName());
         mCurrentTeam = (String) mTeamAButton.getText();
@@ -69,6 +72,7 @@ public class TeamsFragment extends Fragment {
                 mTeamAButton.setTextColor(getResources().getColor(android.R.color.white));
                 mTeamAButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
                 mCurrentTeam = (String) mTeamAButton.getText();
+                mRecyclerView.scrollToPosition(0);
             }
         });
         mTeamBButton.setOnClickListener(new View.OnClickListener() {
@@ -79,12 +83,18 @@ public class TeamsFragment extends Fragment {
                 mTeamBButton.setTextColor(getResources().getColor(android.R.color.white));
                 mTeamBButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
                 mCurrentTeam = (String) mTeamBButton.getText();
+                mRecyclerView.scrollToPosition(0);
             }
         });
 
-        mCategoriesRecyclerViewAdapter = new TeamStatsCategoriesRecyclerViewAdapter(mCategories, null);
-        recyclerView.setAdapter(mCategoriesRecyclerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new StickyHeaderItemDecoration(mCategoriesRecyclerViewAdapter));
+        mCategoriesRecyclerViewAdapter = new TeamStatsCategoriesRecyclerViewAdapter(mCategories, this);
+        mRecyclerView.setAdapter(mCategoriesRecyclerViewAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addItemDecoration(new StickyHeaderItemDecoration(mCategoriesRecyclerViewAdapter));
+    }
+
+    @Override
+    public void onCategoryItemClick(int pos) {
+        Toast.makeText(getActivity(), "Getting Stats " + mCategories.get(pos) + " of " + mCurrentTeam, Toast.LENGTH_SHORT).show();
     }
 }
