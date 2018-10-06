@@ -2,6 +2,7 @@ package com.mission2019.dreamcricket.dreamcricket.Adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,9 +85,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private class MatchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final String TAG = MatchViewHolder.class.getSimpleName();
         private TextView mTeamATextView, mTeamBTextView;
-        private TextView mTitleTextView, mTimeTextView;
+        private TextView mTitleTextView, mTimeTextView, mFormatTextView;
         MatchViewHolder(View matchView) {
             super(matchView);
+            mFormatTextView = matchView.findViewById(R.id.match_format_tv);
             mTeamATextView = matchView.findViewById(R.id.team_one_tv);
             mTeamBTextView = matchView.findViewById(R.id.team_two_tv);
             mTitleTextView = matchView.findViewById(R.id.match_title_tv);
@@ -97,10 +99,21 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             String[] venue = match.getVenue().split(",");
             String[] title = match.getTitle().split(",", 2);
             String match_title = title[title.length-1] + " . " + venue[venue.length-1];
+
+            String format = match.getFormat();
+            String match_format = "";
+            for (int i=0; i<format.length(); i++) {
+                match_format = match_format + format.charAt(i);
+                if (i != format.length()-1) {
+                    match_format = match_format +"\n";
+                }
+            }
+
             mTitleTextView.setText(match_title);
             mTimeTextView.setText(Utility.convertEpochTime(match.getTime()));
             mTeamATextView.setText(match.getTeams().get(0).getName());
             mTeamBTextView.setText(match.getTeams().get(1).getName());
+            mFormatTextView.setText(match_format);
         }
 
         @Override
