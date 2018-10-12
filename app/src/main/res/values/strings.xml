@@ -6,4 +6,10 @@
     <string name="tab_text_2">Player</string>
     <string name="tab_text_3">Venue</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <string-array name="stats_types">
+        <item>Team Stats</item>
+        <item>Player Stats</item>
+        <item>Venue Stats</item>
+    </string-array>
 </resources>
