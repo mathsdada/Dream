@@ -1,6 +1,5 @@
 package com.mission2019.dreamcricket.dreamcricket.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,8 +16,10 @@ import com.google.gson.reflect.TypeToken;
 import com.mission2019.dreamcricket.dreamcricket.Adapter.TeamStatsCategoriesRecyclerViewAdapter;
 import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
+import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormQuery;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamBattingMostRunsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamQuery;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormResponse;
 import com.mission2019.dreamcricket.dreamcricket.R;
 import com.mission2019.dreamcricket.dreamcricket.Rest.API;
@@ -41,6 +42,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
     public static final String KEY_OPP_TEAM = "KEY_OPP_TEAM";
     public static final String KEY_FORMAT = "KEY_FORMAT";
     public static final String KEY_VENUE = "KEY_VENUE";
+    private ArrayList<String> mTargetTeamSquad;
     public TeamsFragment() {
     }
 
@@ -55,6 +57,11 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 new TypeToken<ScheduleTeam>() {}.getType());
         mFormat = getArguments().getString(KEY_FORMAT);
         mVenue = getArguments().getString(KEY_VENUE);
+
+        mTargetTeamSquad = new ArrayList<>();
+        for (SchedulePlayer player : mTargetTeam.getSquad()) {
+            mTargetTeamSquad.add(player.getName());
+        }
     }
 
     @Nullable
@@ -78,8 +85,8 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
         Toast.makeText(getActivity(), "Getting Stats " + mCategories.get(pos) + " of " +
                 mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
         switch (mCategories.get(pos)) {
-            case "Recent Match Results":
-                TeamFormQuery teamFormQuery = new TeamFormQuery(
+            case "Recent Match Results": {
+                TeamQuery teamFormQuery = new TeamQuery(
                         mTargetTeam.getName(), mVenue, mFormat);
                 API.query().getTeamRecentForm(teamFormQuery).enqueue(new Callback<TeamFormResponse>() {
                     @Override
@@ -103,7 +110,36 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
 
                     }
                 });
+                break;
+            }
+            case "Most Runs": {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getTeamStatsBattingMostRuns(teamQuery).enqueue(new Callback<TeamBattingMostRunsResponse>() {
+                    @Override
+                    public void onResponse(Call<TeamBattingMostRunsResponse> call,
+                                           Response<TeamBattingMostRunsResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, "Most Runs");
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getMostRunsOverall())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
 
+                    @Override
+                    public void onFailure(Call<TeamBattingMostRunsResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
         }
     }
 }

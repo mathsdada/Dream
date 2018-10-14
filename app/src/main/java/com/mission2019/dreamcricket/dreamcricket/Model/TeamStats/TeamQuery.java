@@ -3,7 +3,9 @@ package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TeamFormQuery {
+import java.util.ArrayList;
+
+public class TeamQuery {
     @SerializedName("team_name")
     @Expose
     private String mTeamName;
@@ -16,7 +18,11 @@ public class TeamFormQuery {
     @Expose
     private String mFormat;
 
-    public TeamFormQuery(String teamName, String venue, String format) {
+    @SerializedName("squad")
+    @Expose
+    private ArrayList<String> mSquad = null;
+
+    public TeamQuery(String teamName, String venue, String format) {
         mTeamName = teamName;
         mVenue = venue;
         mFormat = format;
@@ -44,5 +50,13 @@ public class TeamFormQuery {
 
     public void setFormat(String format) {
         mFormat = format;
+    }
+
+    public ArrayList<String> getSquad() {
+        return mSquad;
+    }
+
+    public void setSquad(ArrayList<String> squad) {
+        mSquad = squad;
     }
 }
