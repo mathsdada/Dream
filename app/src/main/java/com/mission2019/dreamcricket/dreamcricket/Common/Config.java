@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Config {
-    public static final String API_BASE_URL = "https://young-tor-24482.herokuapp.com/";
-    public static final String API_KEY = "1234567890";
+//    public static final String API_BASE_URL = "https://young-tor-24482.herokuapp.com/";
+    public static final String API_BASE_URL = "http://172.20.10.2:5000/";
+//    public static final String API_KEY = "1234567890";
 
     public static final ArrayList<String> teamStatsCategories = new ArrayList<>(Arrays.asList(
              "Recent Matches",

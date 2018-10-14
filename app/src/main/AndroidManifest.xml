@@ -30,8 +30,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mission2019.dreamcricket.dreamcricket.Activity.ScheduleActivity" />
         </activity>
-        <activity android:name=".TableActivity">
-        </activity>
     </application>
 
 </manifest>

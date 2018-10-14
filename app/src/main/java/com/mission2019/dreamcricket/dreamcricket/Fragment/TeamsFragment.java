@@ -1,19 +1,15 @@
 package com.mission2019.dreamcricket.dreamcricket.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -21,30 +17,44 @@ import com.google.gson.reflect.TypeToken;
 import com.mission2019.dreamcricket.dreamcricket.Adapter.TeamStatsCategoriesRecyclerViewAdapter;
 import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
-import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleMatch;
-import com.mission2019.dreamcricket.dreamcricket.Activity.MatchActivity;
+import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormQuery;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormResponse;
 import com.mission2019.dreamcricket.dreamcricket.R;
-import java.lang.reflect.Type;
+import com.mission2019.dreamcricket.dreamcricket.Rest.API;
+
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecyclerViewAdapter.OnCategoryClickListener {
     private static final String TAG = TeamsFragment.class.getSimpleName();
-    private ScheduleMatch mScheduleMatch;
-    private String mCurrentTeam;
     private ArrayList<String> mCategories = Config.teamStatsCategories;
     private TeamStatsCategoriesRecyclerViewAdapter mCategoriesRecyclerViewAdapter;
     private RecyclerView mRecyclerView;
+
+    private ScheduleTeam mTargetTeam, mOppTeam;
+    private String mFormat, mVenue;
+    public static final String KEY_TARGET_TEAM = "KEY_TARGET_TEAM";
+    public static final String KEY_OPP_TEAM = "KEY_OPP_TEAM";
+    public static final String KEY_FORMAT = "KEY_FORMAT";
+    public static final String KEY_VENUE = "KEY_VENUE";
     public TeamsFragment() {
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String matchData = getArguments().getString(MatchActivity.KEY_MATCH_DATA);
 
         Gson gson = new Gson();
-        Type type = new TypeToken<ScheduleMatch>() {}.getType();
-        mScheduleMatch = gson.fromJson(matchData, type);
+        mTargetTeam = gson.fromJson(getArguments().getString(KEY_TARGET_TEAM),
+                new TypeToken<ScheduleTeam>() {}.getType());
+        mOppTeam = gson.fromJson(getArguments().getString(KEY_OPP_TEAM),
+                new TypeToken<ScheduleTeam>() {}.getType());
+        mFormat = getArguments().getString(KEY_FORMAT);
+        mVenue = getArguments().getString(KEY_VENUE);
     }
 
     @Nullable
@@ -56,37 +66,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final MaterialButton mTeamAButton = view.findViewById(R.id.team_a_button);
-        final MaterialButton mTeamBButton = view.findViewById(R.id.team_b_button);
         mRecyclerView = view.findViewById(R.id.recyclerview_team_stats_categories);
-
-        mTeamAButton.setText(mScheduleMatch.getTeams().get(0).getName());
-        mCurrentTeam = (String) mTeamAButton.getText();
-        mTeamBButton.setText(mScheduleMatch.getTeams().get(1).getName());
-
-        mTeamAButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTeamBButton.setTextColor(getResources().getColor(R.color.colorPrimary));
-                mTeamBButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.white));
-                mTeamAButton.setTextColor(getResources().getColor(android.R.color.white));
-                mTeamAButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                mCurrentTeam = (String) mTeamAButton.getText();
-                mRecyclerView.scrollToPosition(0);
-            }
-        });
-        mTeamBButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTeamAButton.setTextColor(getResources().getColor(R.color.colorPrimary));
-                mTeamAButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.white));
-                mTeamBButton.setTextColor(getResources().getColor(android.R.color.white));
-                mTeamBButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                mCurrentTeam = (String) mTeamBButton.getText();
-                mRecyclerView.scrollToPosition(0);
-            }
-        });
-
         mCategoriesRecyclerViewAdapter = new TeamStatsCategoriesRecyclerViewAdapter(mCategories, this);
         mRecyclerView.setAdapter(mCategoriesRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -95,6 +75,35 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
 
     @Override
     public void onCategoryItemClick(int pos) {
-        Toast.makeText(getActivity(), "Getting Stats " + mCategories.get(pos) + " of " + mCurrentTeam, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Getting Stats " + mCategories.get(pos) + " of " +
+                mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+        switch (mCategories.get(pos)) {
+            case "Recent Match Results":
+                TeamFormQuery teamFormQuery = new TeamFormQuery(
+                        mTargetTeam.getName(), mVenue, mFormat);
+                API.query().getTeamRecentForm(teamFormQuery).enqueue(new Callback<TeamFormResponse>() {
+                    @Override
+                    public void onResponse(Call<TeamFormResponse> call, Response<TeamFormResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, "Recent Match Results");
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getTeamFormOverall())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<TeamFormResponse> call, Throwable t) {
+
+                    }
+                });
+
+        }
     }
 }

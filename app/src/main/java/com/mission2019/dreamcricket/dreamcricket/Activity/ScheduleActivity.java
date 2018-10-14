@@ -127,7 +127,7 @@ public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyc
     }
 
     public void getSchedule() {
-        API.query().getSchedule(Config.API_KEY).enqueue(new Callback<ScheduleResponse>() {
+        API.query().getSchedule().enqueue(new Callback<ScheduleResponse>() {
             @Override
             public void onResponse(@NonNull Call<ScheduleResponse> call,
                                    @NonNull Response<ScheduleResponse> response) {

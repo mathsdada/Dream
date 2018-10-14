@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class Utility {
+    public static final String TEAM_STATS = "Team Stats";
+    public static final String PLAYER_STATS = "Player Stats";
+    public static final String VENUE_STATS = "Venue Stats";
     public static String convertEpochTime(String epochTimeStr) {
         long epochTime = Long.parseLong(epochTimeStr);
         Date date = new Date(epochTime*1000L);

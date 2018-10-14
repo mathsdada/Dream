@@ -1,10 +1,12 @@
 package com.mission2019.dreamcricket.dreamcricket.Adapter;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
@@ -24,12 +26,12 @@ public class TableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new RowViewHolder(LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.table_activity_row, parent, false));
+                inflate(R.layout.table_activity_row, parent, false), false);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ((RowViewHolder)holder).bindViews(mTableData.get(position));
+        ((RowViewHolder) holder).bindViews(mTableData.get(position));
     }
 
     @Override
@@ -49,44 +51,9 @@ public class TableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public void bindHeaderData(View header, int headerPosition) {
-        TextView col1Tv, col2Tv,col3Tv, col4Tv, col5Tv, col6Tv;
+        RowViewHolder viewHolder = new RowViewHolder(header, true);
         TableRow row = mTableData.get(headerPosition);
-        col1Tv = header.findViewById(R.id.column_1);
-        col2Tv = header.findViewById(R.id.column_2);
-        col3Tv = header.findViewById(R.id.column_3);
-        col4Tv = header.findViewById(R.id.column_4);
-        col5Tv = header.findViewById(R.id.column_5);
-        col6Tv = header.findViewById(R.id.column_6);
-        if (row.getColOne() != null) {
-            col1Tv.setText(row.getColOne());
-        } else {
-            col1Tv.setVisibility(View.GONE);
-        }
-        if (row.getColTwo() != null) {
-            col2Tv.setText(row.getColTwo());
-        } else {
-            col2Tv.setVisibility(View.GONE);
-        }
-        if (row.getColThree() != null) {
-            col3Tv.setText(row.getColThree());
-        } else {
-            col3Tv.setVisibility(View.GONE);
-        }
-        if (row.getColFour() != null) {
-            col4Tv.setText(row.getColFour());
-        } else {
-            col4Tv.setVisibility(View.GONE);
-        }
-        if (row.getColFive() != null) {
-            col5Tv.setText(row.getColFive());
-        } else {
-            col5Tv.setVisibility(View.GONE);
-        }
-        if (row.getColSix() != null) {
-            col6Tv.setText(row.getColSix());
-        } else {
-            col6Tv.setVisibility(View.GONE);
-        }
+        viewHolder.bindViews(row);
     }
 
     @Override
@@ -95,8 +62,9 @@ public class TableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     private class RowViewHolder extends RecyclerView.ViewHolder {
-        private TextView col1Tv, col2Tv,col3Tv, col4Tv, col5Tv, col6Tv;
-        RowViewHolder(@NonNull View itemView) {
+        private TextView col1Tv, col2Tv, col3Tv, col4Tv, col5Tv, col6Tv;
+
+        RowViewHolder(@NonNull View itemView, boolean isHeader) {
             super(itemView);
             col1Tv = itemView.findViewById(R.id.column_1);
             col2Tv = itemView.findViewById(R.id.column_2);
@@ -104,38 +72,48 @@ public class TableRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             col4Tv = itemView.findViewById(R.id.column_4);
             col5Tv = itemView.findViewById(R.id.column_5);
             col6Tv = itemView.findViewById(R.id.column_6);
+            if (isHeader) {
+                itemView.setBackgroundColor(Color.GREEN);
+//                col1Tv.setTextColor(Color.WHITE);
+//                col2Tv.setTextColor(Color.WHITE);
+//                col3Tv.setTextColor(Color.WHITE);
+//                col4Tv.setTextColor(Color.WHITE);
+//                col5Tv.setTextColor(Color.WHITE);
+//                col6Tv.setTextColor(Color.WHITE);
+            }
         }
 
         void bindViews(TableRow row) {
             if (row.getColOne() != null) {
                 col1Tv.setText(row.getColOne());
-            } else {
-                col1Tv.setVisibility(View.GONE);
+                col1Tv.setVisibility(View.VISIBLE);
             }
             if (row.getColTwo() != null) {
                 col2Tv.setText(row.getColTwo());
-            } else {
-                col2Tv.setVisibility(View.GONE);
+                col2Tv.setVisibility(View.VISIBLE);
             }
             if (row.getColThree() != null) {
                 col3Tv.setText(row.getColThree());
+                col3Tv.setVisibility(View.VISIBLE);
             } else {
-                col3Tv.setVisibility(View.GONE);
+                /* If there are only two columns available,
+                 * then change the weight of first column to 1, so that columns will share
+                 * the screen 50-50 */
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) col1Tv.getLayoutParams();
+                layoutParams.weight = 1;
+                col1Tv.setLayoutParams(layoutParams);
             }
             if (row.getColFour() != null) {
                 col4Tv.setText(row.getColFour());
-            } else {
-                col4Tv.setVisibility(View.GONE);
+                col4Tv.setVisibility(View.VISIBLE);
             }
             if (row.getColFive() != null) {
                 col5Tv.setText(row.getColFive());
-            } else {
-                col5Tv.setVisibility(View.GONE);
+                col5Tv.setVisibility(View.VISIBLE);
             }
             if (row.getColSix() != null) {
                 col6Tv.setText(row.getColSix());
-            } else {
-                col6Tv.setVisibility(View.GONE);
+                col6Tv.setVisibility(View.VISIBLE);
             }
         }
     }

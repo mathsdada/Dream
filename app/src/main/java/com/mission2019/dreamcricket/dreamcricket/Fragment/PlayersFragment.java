@@ -3,13 +3,13 @@ package com.mission2019.dreamcricket.dreamcricket.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,18 +21,23 @@ import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
 import com.mission2019.dreamcricket.dreamcricket.R;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PlayersFragment extends Fragment implements PlayerStatsSquadRecyclerViewAdapter.onPlayerClickListener {
     private static String TAG = PlayersFragment.class.getSimpleName();
-    private ScheduleMatch mScheduleMatch;
+
     private PlayerStatsSquadRecyclerViewAdapter mPlayerStatsSquadRecyclerViewAdapter;
-    private HashMap<String, ArrayList<Object>> mPerTeamSquadDataset;
-    private String mCurrentTeam;
-    private ArrayList<Object> mCurrentTeamSquadData;
-    private RecyclerView mRecyclerView;
+    private ArrayList<Object> mTargetTeamSquadDataset;
+
+    public static final String KEY_TARGET_TEAM = "KEY_TARGET_TEAM";
+    public static final String KEY_OPP_TEAM = "KEY_OPP_TEAM";
+    public static final String KEY_FORMAT = "KEY_FORMAT";
+    public static final String KEY_VENUE = "KEY_VENUE";
+
+    private ScheduleTeam mTargetTeam, mOppTeam;
+    private String mFormat, mVenue;
+
     public PlayersFragment() {
     }
 
@@ -42,39 +47,35 @@ public class PlayersFragment extends Fragment implements PlayerStatsSquadRecycle
         String matchData = getArguments().getString(MatchActivity.KEY_MATCH_DATA);
 
         Gson gson = new Gson();
-        Type type = new TypeToken<ScheduleMatch>() {}.getType();
-        mScheduleMatch = gson.fromJson(matchData, type);
-        generatePerTeamPerRoleSquad();
+        mTargetTeam = gson.fromJson(getArguments().getString(KEY_TARGET_TEAM),
+                new TypeToken<ScheduleTeam>() {}.getType());
+        mOppTeam = gson.fromJson(getArguments().getString(KEY_OPP_TEAM),
+                new TypeToken<ScheduleTeam>() {}.getType());
+        mFormat = getArguments().getString(KEY_FORMAT);
+        mVenue = getArguments().getString(KEY_VENUE);
 
-        mCurrentTeamSquadData = new ArrayList<>();
+        mTargetTeamSquadDataset = generatePerRoleSquad(mTargetTeam);
     }
 
-    private void generatePerTeamPerRoleSquad() {
-        HashMap<String, HashMap<String, ArrayList<SchedulePlayer>>> perTeamPerRoleSquad = new HashMap<>();
-        for (ScheduleTeam scheduleTeam : mScheduleMatch.getTeams()) {
-            HashMap<String, ArrayList<SchedulePlayer>> teamSquad = new HashMap<>();
-            for (SchedulePlayer player : scheduleTeam.getSquad()) {
-                if (teamSquad.containsKey(player.getRole())) {
-                    teamSquad.get(player.getRole()).add(player);
-                } else {
-                    ArrayList<SchedulePlayer> rolePlayers = new ArrayList<>();
-                    rolePlayers.add(player);
-                    teamSquad.put(player.getRole(), rolePlayers);
-                }
+    private ArrayList<Object> generatePerRoleSquad(ScheduleTeam team) {
+        HashMap<String, ArrayList<SchedulePlayer>> teamSquadPerRole = new HashMap<>();
+        for (SchedulePlayer player : team.getSquad()) {
+            if (teamSquadPerRole.containsKey(player.getRole())) {
+                teamSquadPerRole.get(player.getRole()).add(player);
+            } else {
+                ArrayList<SchedulePlayer> rolePlayers = new ArrayList<>();
+                rolePlayers.add(player);
+                teamSquadPerRole.put(player.getRole(), rolePlayers);
             }
-            perTeamPerRoleSquad.put(scheduleTeam.getName(), teamSquad);
         }
-
-        mPerTeamSquadDataset = new HashMap<>();
-        for (String team : perTeamPerRoleSquad.keySet()) {
-            ArrayList<Object> squad = new ArrayList<>();
-            for (String role : perTeamPerRoleSquad.get(team).keySet()) {
-                squad.add(role);
-                squad.addAll(perTeamPerRoleSquad.get(team).get(role));
-            }
-            mPerTeamSquadDataset.put(team, squad);
+        ArrayList<Object> dataset = new ArrayList<>();
+        for (String role : teamSquadPerRole.keySet()) {
+            dataset.add(role);
+            dataset.addAll(teamSquadPerRole.get(role));
         }
+        return dataset;
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,48 +85,12 @@ public class PlayersFragment extends Fragment implements PlayerStatsSquadRecycle
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final MaterialButton mTeamAButton = view.findViewById(R.id.team_a_button);
-        final MaterialButton mTeamBButton = view.findViewById(R.id.team_b_button);
-        mRecyclerView = view.findViewById(R.id.recyclerview_team_squad);
-
-        mTeamAButton.setText(mScheduleMatch.getTeams().get(0).getName());
-        mCurrentTeam = (String) mTeamAButton.getText();
-        mCurrentTeamSquadData.addAll(mPerTeamSquadDataset.get(mCurrentTeam));
-        mTeamBButton.setText(mScheduleMatch.getTeams().get(1).getName());
-
-        mTeamAButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTeamBButton.setTextColor(getResources().getColor(R.color.colorPrimary));
-                mTeamBButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.white));
-                mTeamAButton.setTextColor(getResources().getColor(android.R.color.white));
-                mTeamAButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                mCurrentTeam = (String) mTeamAButton.getText();
-                mCurrentTeamSquadData.clear();
-                mCurrentTeamSquadData.addAll(mPerTeamSquadDataset.get(mCurrentTeam));
-                mPlayerStatsSquadRecyclerViewAdapter.notifyDataSetChanged();
-                mRecyclerView.scrollToPosition(0);
-            }
-        });
-        mTeamBButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTeamAButton.setTextColor(getResources().getColor(R.color.colorPrimary));
-                mTeamAButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.white));
-                mTeamBButton.setTextColor(getResources().getColor(android.R.color.white));
-                mTeamBButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                mCurrentTeam = (String) mTeamBButton.getText();
-                mCurrentTeamSquadData.clear();
-                mCurrentTeamSquadData.addAll(mPerTeamSquadDataset.get(mCurrentTeam));
-                mPlayerStatsSquadRecyclerViewAdapter.notifyDataSetChanged();
-                mRecyclerView.scrollToPosition(0);
-            }
-        });
-
-        mPlayerStatsSquadRecyclerViewAdapter = new PlayerStatsSquadRecyclerViewAdapter(mCurrentTeamSquadData, this);
-        mRecyclerView.setAdapter(mPlayerStatsSquadRecyclerViewAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new StickyHeaderItemDecoration(mPlayerStatsSquadRecyclerViewAdapter));
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview_team_squad);
+        mPlayerStatsSquadRecyclerViewAdapter =
+                new PlayerStatsSquadRecyclerViewAdapter(mTargetTeamSquadDataset, this);
+        recyclerView.setAdapter(mPlayerStatsSquadRecyclerViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new StickyHeaderItemDecoration(mPlayerStatsSquadRecyclerViewAdapter));
     }
 
     @Override

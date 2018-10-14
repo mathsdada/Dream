@@ -4,46 +4,46 @@
     android:layout_width="match_parent"
     android:layout_height="40dp"
     android:orientation="horizontal"
-    tools:context=".TableActivity">
+    tools:context=".Activity.TableActivityTemp">
     <TextView
         android:id="@+id/column_1"
-        android:text="Virat Kohli"
         android:gravity="center"
+        android:visibility="gone"
         android:layout_weight="3"
         android:layout_width="0dp"
         android:layout_height="match_parent"/>
     <TextView
         android:id="@+id/column_2"
-        android:text="M"
         android:gravity="center"
+        android:visibility="gone"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"/>
     <TextView
         android:id="@+id/column_3"
-        android:text="R"
         android:gravity="center"
+        android:visibility="gone"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"/>
     <TextView
         android:id="@+id/column_4"
-        android:text="4s"
         android:gravity="center"
+        android:visibility="gone"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"/>
     <TextView
         android:id="@+id/column_5"
-        android:text="6s"
         android:gravity="center"
+        android:visibility="gone"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"/>
     <TextView
         android:id="@+id/column_6"
-        android:text="NOs"
         android:gravity="center"
+        android:visibility="gone"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"/>

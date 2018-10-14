@@ -12,4 +12,5 @@
         <item>Player Stats</item>
         <item>Venue Stats</item>
     </string-array>
+    <string name="title_activity_table">TableActivity</string>
 </resources>

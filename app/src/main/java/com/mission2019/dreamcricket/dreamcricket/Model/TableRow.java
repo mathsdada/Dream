@@ -4,28 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TableRow {
-    @SerializedName("column_1")
-    @Expose
     private String colOne = null;
-
-    @SerializedName("column_2")
-    @Expose
     private String colTwo = null;
-
-    @SerializedName("column_3")
-    @Expose
     private String colThree = null;
-
-    @SerializedName("column_4")
-    @Expose
     private String colFour = null;
-
-    @SerializedName("column_5")
-    @Expose
     private String colFive = null;
-
-    @SerializedName("column_6")
-    @Expose
     private String colSix = null;
 
     public TableRow(String colOne) {
