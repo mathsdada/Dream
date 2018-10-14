@@ -6,7 +6,7 @@ import com.mission2019.dreamcricket.dreamcricket.Model.TableRow;
 
 import java.util.ArrayList;
 
-public class TeamBattingMostRunsResponse {
+public class BattingMostRunsResponse {
     @SerializedName("overall")
     @Expose
     private ArrayList<BattingMostRuns> mMostRunsOverall;

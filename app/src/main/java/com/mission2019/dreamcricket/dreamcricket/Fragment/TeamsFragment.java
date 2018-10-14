@@ -18,7 +18,8 @@ import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamBattingMostRunsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestStrikeRateResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMostRunsResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamQuery;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormResponse;
 import com.mission2019.dreamcricket.dreamcricket.R;
@@ -115,10 +116,10 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
             case "Most Runs": {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
-                API.query().getTeamStatsBattingMostRuns(teamQuery).enqueue(new Callback<TeamBattingMostRunsResponse>() {
+                API.query().getTeamStatsBattingMostRuns(teamQuery).enqueue(new Callback<BattingMostRunsResponse>() {
                     @Override
-                    public void onResponse(Call<TeamBattingMostRunsResponse> call,
-                                           Response<TeamBattingMostRunsResponse> response) {
+                    public void onResponse(Call<BattingMostRunsResponse> call,
+                                           Response<BattingMostRunsResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
                         bundle.putString(TableFragment.TABLE_TITLE, "Most Runs");
@@ -134,7 +135,34 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     }
 
                     @Override
-                    public void onFailure(Call<TeamBattingMostRunsResponse> call, Throwable t) {
+                    public void onFailure(Call<BattingMostRunsResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case "Best Batting Strike Rate": {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBestBatStrikeRate(teamQuery).enqueue(new Callback<BattingBestStrikeRateResponse>() {
+                    @Override
+                    public void onResponse(Call<BattingBestStrikeRateResponse> call, Response<BattingBestStrikeRateResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, "Best Batting Strike Rate");
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getMostRunsOverall())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BattingBestStrikeRateResponse> call, Throwable t) {
 
                     }
                 });
