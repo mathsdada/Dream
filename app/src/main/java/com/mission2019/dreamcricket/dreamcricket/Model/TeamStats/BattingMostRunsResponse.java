@@ -15,7 +15,7 @@ public class BattingMostRunsResponse {
     @Expose
     private ArrayList<BattingMostRuns> mMostRunsAtVenue;
 
-    public ArrayList<BattingMostRuns> getMostRunsOverall() {
+    public ArrayList<BattingMostRuns> getOverallStats() {
         return mMostRunsOverall;
     }
 
@@ -23,7 +23,7 @@ public class BattingMostRunsResponse {
         mMostRunsOverall = mostRunsOverall;
     }
 
-    public ArrayList<BattingMostRuns> getMostRunsAtVenue() {
+    public ArrayList<BattingMostRuns> getAtVenueStats() {
         return mMostRunsAtVenue;
     }
 

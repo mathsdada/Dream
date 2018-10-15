@@ -15,7 +15,7 @@ public class TeamFormResponse {
     @Expose
     private ArrayList<TeamForm> mTeamFormAtVenue;
 
-    public ArrayList<TeamForm> getTeamFormOverall() {
+    public ArrayList<TeamForm> getOverallStats() {
         return mTeamFormOverall;
     }
 
@@ -23,7 +23,7 @@ public class TeamFormResponse {
         mTeamFormOverall = teamFormOverall;
     }
 
-    public ArrayList<TeamForm> getTeamFormAtVenue() {
+    public ArrayList<TeamForm> getAtVenueStats() {
         return mTeamFormAtVenue;
     }
 

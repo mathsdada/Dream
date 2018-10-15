@@ -19,6 +19,11 @@ import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecorati
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestStrikeRateResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost100sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost4sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost50sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost6sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingHighScoresResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMostRunsResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamQuery;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormResponse;
@@ -87,7 +92,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
         switch (mCategories.get(pos)) {
             case "Recent Match Results": {
-                TeamQuery teamFormQuery = new TeamQuery(
+              TeamQuery teamFormQuery = new TeamQuery(
                         mTargetTeam.getName(), mVenue, mFormat);
                 API.query().getTeamRecentForm(teamFormQuery).enqueue(new Callback<TeamFormResponse>() {
                     @Override
@@ -97,7 +102,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                         bundle.putString(TableFragment.TABLE_TITLE, "Recent Match Results");
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
-                                        response.body().getTeamFormOverall())));
+                                        response.body().getOverallStats())));
                         TableFragment fragment = new TableFragment();
                         fragment.setArguments(bundle);
                         getActivity().getSupportFragmentManager().beginTransaction().
@@ -125,7 +130,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                         bundle.putString(TableFragment.TABLE_TITLE, "Most Runs");
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
-                                        response.body().getMostRunsOverall())));
+                                        response.body().getOverallStats())));
                         TableFragment fragment = new TableFragment();
                         fragment.setArguments(bundle);
                         getActivity().getSupportFragmentManager().beginTransaction().
@@ -163,6 +168,141 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
 
                     @Override
                     public void onFailure(Call<BattingBestStrikeRateResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case "Most 50s": {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBattingMost50s(teamQuery).enqueue(new Callback<BattingMost50sResponse>() {
+                    @Override
+                    public void onResponse(Call<BattingMost50sResponse> call, Response<BattingMost50sResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, "Most 50s");
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BattingMost50sResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case "Most 100s": {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBattingMost100s(teamQuery).enqueue(new Callback<BattingMost100sResponse>() {
+                    @Override
+                    public void onResponse(Call<BattingMost100sResponse> call, Response<BattingMost100sResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, "Most 100s");
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BattingMost100sResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case "Most 4s": {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBattingMost4s(teamQuery).enqueue(new Callback<BattingMost4sResponse>() {
+                    @Override
+                    public void onResponse(Call<BattingMost4sResponse> call, Response<BattingMost4sResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, "Most 4s");
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BattingMost4sResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case "Most 6s": {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBattingMost6s(teamQuery).enqueue(new Callback<BattingMost6sResponse>() {
+                    @Override
+                    public void onResponse(Call<BattingMost6sResponse> call, Response<BattingMost6sResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, "Most 6s");
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BattingMost6sResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case "High Scores": {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBattingHighScores(teamQuery).enqueue(new Callback<BattingHighScoresResponse>() {
+                    @Override
+                    public void onResponse(Call<BattingHighScoresResponse> call, Response<BattingHighScoresResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, "High Scores");
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BattingHighScoresResponse> call, Throwable t) {
 
                     }
                 });
