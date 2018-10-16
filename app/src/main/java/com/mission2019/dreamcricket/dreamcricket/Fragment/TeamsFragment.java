@@ -18,12 +18,14 @@ import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestAverageResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestStrikeRateResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost100sResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost4sResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost50sResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost6sResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingHighScoresResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMostDucksResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMostRunsResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamQuery;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormResponse;
@@ -91,7 +93,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
         Toast.makeText(getActivity(), "Getting Stats " + mCategories.get(pos) + " of " +
                 mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
         switch (mCategories.get(pos)) {
-            case "Recent Match Results": {
+            case Config.TEAM_BATTING_FORM: {
               TeamQuery teamFormQuery = new TeamQuery(
                         mTargetTeam.getName(), mVenue, mFormat);
                 API.query().getTeamRecentForm(teamFormQuery).enqueue(new Callback<TeamFormResponse>() {
@@ -99,7 +101,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     public void onResponse(Call<TeamFormResponse> call, Response<TeamFormResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, "Recent Match Results");
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_FORM);
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
                                         response.body().getOverallStats())));
@@ -118,7 +120,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 });
                 break;
             }
-            case "Most Runs": {
+            case Config.TEAM_BATTING_MOST_RUNS: {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
                 API.query().getTeamStatsBattingMostRuns(teamQuery).enqueue(new Callback<BattingMostRunsResponse>() {
@@ -127,7 +129,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                                            Response<BattingMostRunsResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, "Most Runs");
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_RUNS);
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
                                         response.body().getOverallStats())));
@@ -146,7 +148,34 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 });
                 break;
             }
-            case "Best Batting Strike Rate": {
+            case Config.TEAM_BATTING_BEST_AVG: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBestBatAverage(teamQuery).enqueue(new Callback<BattingBestAverageResponse>() {
+                    @Override
+                    public void onResponse(Call<BattingBestAverageResponse> call, Response<BattingBestAverageResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_BEST_AVG);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getMostRunsOverall())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BattingBestAverageResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BATTING_BEST_SR: {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
                 API.query().getBestBatStrikeRate(teamQuery).enqueue(new Callback<BattingBestStrikeRateResponse>() {
@@ -154,7 +183,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     public void onResponse(Call<BattingBestStrikeRateResponse> call, Response<BattingBestStrikeRateResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, "Best Batting Strike Rate");
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_BEST_SR);
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
                                         response.body().getMostRunsOverall())));
@@ -173,7 +202,34 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 });
                 break;
             }
-            case "Most 50s": {
+            case Config.TEAM_BATTING_MOST_DUCKS: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBattingMostDucks(teamQuery).enqueue(new Callback<BattingMostDucksResponse>() {
+                    @Override
+                    public void onResponse(Call<BattingMostDucksResponse> call, Response<BattingMostDucksResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_DUCKS);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BattingMostDucksResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BATTING_MOST_50s: {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
                 API.query().getBattingMost50s(teamQuery).enqueue(new Callback<BattingMost50sResponse>() {
@@ -181,7 +237,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     public void onResponse(Call<BattingMost50sResponse> call, Response<BattingMost50sResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, "Most 50s");
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_50s);
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
                                         response.body().getOverallStats())));
@@ -200,7 +256,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 });
                 break;
             }
-            case "Most 100s": {
+            case Config.TEAM_BATTING_MOST_100s: {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
                 API.query().getBattingMost100s(teamQuery).enqueue(new Callback<BattingMost100sResponse>() {
@@ -208,7 +264,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     public void onResponse(Call<BattingMost100sResponse> call, Response<BattingMost100sResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, "Most 100s");
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_100s);
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
                                         response.body().getOverallStats())));
@@ -227,7 +283,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 });
                 break;
             }
-            case "Most 4s": {
+            case Config.TEAM_BATTING_MOST_4s: {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
                 API.query().getBattingMost4s(teamQuery).enqueue(new Callback<BattingMost4sResponse>() {
@@ -235,7 +291,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     public void onResponse(Call<BattingMost4sResponse> call, Response<BattingMost4sResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, "Most 4s");
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_4s);
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
                                         response.body().getOverallStats())));
@@ -254,7 +310,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 });
                 break;
             }
-            case "Most 6s": {
+            case Config.TEAM_BATTING_MOST_6s: {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
                 API.query().getBattingMost6s(teamQuery).enqueue(new Callback<BattingMost6sResponse>() {
@@ -262,7 +318,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     public void onResponse(Call<BattingMost6sResponse> call, Response<BattingMost6sResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, "Most 6s");
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_6s);
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
                                         response.body().getOverallStats())));
@@ -281,7 +337,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 });
                 break;
             }
-            case "High Scores": {
+            case Config.TEAM_BATTING_HIGH_SCORES: {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
                 API.query().getBattingHighScores(teamQuery).enqueue(new Callback<BattingHighScoresResponse>() {
@@ -289,7 +345,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     public void onResponse(Call<BattingHighScoresResponse> call, Response<BattingHighScoresResponse> response) {
                         Gson gson = new Gson();
                         Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, "High Scores");
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_HIGH_SCORES);
                         bundle.putString(TableFragment.TABLE_DATA_OVERALL,
                                 gson.toJson(response.body().convertToTableRows(
                                         response.body().getOverallStats())));

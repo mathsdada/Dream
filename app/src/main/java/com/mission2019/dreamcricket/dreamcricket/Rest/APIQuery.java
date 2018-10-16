@@ -1,6 +1,7 @@
 package com.mission2019.dreamcricket.dreamcricket.Rest;
 
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestAverageResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestStrikeRateResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost100sResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost4sResponse;
@@ -22,11 +23,15 @@ public interface APIQuery {
     @GET("schedule")
     Call<ScheduleResponse> getSchedule();
 
+    // Team Stats
     @POST("team_stats/recent_form")
     Call<TeamFormResponse> getTeamRecentForm(@Body TeamQuery query);
 
     @POST("team_stats/batting/most_runs")
     Call<BattingMostRunsResponse> getTeamStatsBattingMostRuns(@Body TeamQuery query);
+
+    @POST("/team_stats/batting/best_average")
+    Call<BattingBestAverageResponse> getBestBatAverage(@Body TeamQuery query);
 
     @POST("/team_stats/batting/best_strike_rate")
     Call<BattingBestStrikeRateResponse> getBestBatStrikeRate(@Body TeamQuery query);
