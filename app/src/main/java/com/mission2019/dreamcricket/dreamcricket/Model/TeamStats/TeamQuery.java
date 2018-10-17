@@ -22,6 +22,10 @@ public class TeamQuery {
     @Expose
     private ArrayList<String> mSquad = null;
 
+    @SerializedName("squad-2")
+    @Expose
+    private ArrayList<String> mSquadExtra = null;
+
     public TeamQuery(String teamName, String venue, String format) {
         mTeamName = teamName;
         mVenue = venue;
@@ -58,5 +62,13 @@ public class TeamQuery {
 
     public void setSquad(ArrayList<String> squad) {
         mSquad = squad;
+    }
+
+    public ArrayList<String> getSquadExtra() {
+        return mSquadExtra;
+    }
+
+    public void setSquadExtra(ArrayList<String> squadExtra) {
+        mSquadExtra = squadExtra;
     }
 }

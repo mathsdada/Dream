@@ -1,17 +1,27 @@
 package com.mission2019.dreamcricket.dreamcricket.Rest;
 
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestAverageResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestStrikeRateResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost100sResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost4sResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost50sResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost6sResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingHighScoresResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMostDucksResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMostRunsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestAverageResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestStrikeRateResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost100sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost4sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost50sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost6sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingHighScoresResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMostDucksResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMostRunsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingBestBowlingFigureResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingBestEconomyResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingBestStrikeRateResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMost4PlusWicketsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMost5PlusWicketsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMostMaidensResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMostRunsConcededResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMostWicketsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.HeadToHead.HeadToHeadRunsVsBowlersResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.HeadToHead.HeadToHeadRunsVsBowlingStylesResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamQuery;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.RecentMatches.TeamFormResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -53,4 +63,34 @@ public interface APIQuery {
 
     @POST("/team_stats/batting/high_scores")
     Call<BattingHighScoresResponse> getBattingHighScores(@Body TeamQuery query);
+
+    @POST("/team_stats/bowling/most_wickets")
+    Call<BowlingMostWicketsResponse> getBowlingMostWickets(@Body TeamQuery query);
+
+    @POST("/team_stats/bowling/best_economy")
+    Call<BowlingBestEconomyResponse> getBowlingBestEconomy(@Body TeamQuery query);
+
+    @POST("/team_stats/bowling/best_strike_rate")
+    Call<BowlingBestStrikeRateResponse> getBowlingBestStrikeRate(@Body TeamQuery query);
+
+    @POST("/team_stats/bowling/most_4_plus_wickets")
+    Call<BowlingMost4PlusWicketsResponse> getBowlingMost4PlusWickets(@Body TeamQuery query);
+
+    @POST("/team_stats/bowling/most_5_plus_wickets")
+    Call<BowlingMost5PlusWicketsResponse> getBowlingMost5PlusWickets(@Body TeamQuery query);
+
+    @POST("/team_stats/bowling/most_maidens")
+    Call<BowlingMostMaidensResponse> getBowlingMostMaidens(@Body TeamQuery query);
+
+    @POST("/team_stats/bowling/best_bowling_in_innings")
+    Call<BowlingBestBowlingFigureResponse> getBowlingBestFiguresInInnings(@Body TeamQuery query);
+
+    @POST("/team_stats/bowling/most_runs_conceded_in_innings")
+    Call<BowlingMostRunsConcededResponse> getBowlingMostRunsConcededInInnings(@Body TeamQuery query);
+
+    @POST("/team_stats/head_to_head/runs_against_bowling_styles")
+    Call<HeadToHeadRunsVsBowlingStylesResponse> getHeadToHeadRunsVsBowlingStyles(@Body TeamQuery query);
+
+    @POST("/team_stats/head_to_head/runs_against_bowlers")
+    Call<HeadToHeadRunsVsBowlersResponse> getHeadToHeadRunsVsBowlers(@Body TeamQuery query);
 }

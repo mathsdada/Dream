@@ -18,17 +18,27 @@ import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestAverageResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingBestStrikeRateResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost100sResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost4sResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost50sResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMost6sResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingHighScoresResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMostDucksResponse;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.BattingMostRunsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestAverageResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestStrikeRateResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost100sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost4sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost50sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost6sResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingHighScoresResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMostDucksResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMostRunsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingBestBowlingFigureResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingBestEconomyResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingBestStrikeRateResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMost4PlusWicketsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMost5PlusWicketsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMostMaidensResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMostRunsConcededResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMostWicketsResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.HeadToHead.HeadToHeadRunsVsBowlersResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.HeadToHead.HeadToHeadRunsVsBowlingStylesResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamQuery;
-import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamFormResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.RecentMatches.TeamFormResponse;
 import com.mission2019.dreamcricket.dreamcricket.R;
 import com.mission2019.dreamcricket.dreamcricket.Rest.API;
 
@@ -51,6 +61,8 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
     public static final String KEY_FORMAT = "KEY_FORMAT";
     public static final String KEY_VENUE = "KEY_VENUE";
     private ArrayList<String> mTargetTeamSquad;
+    private ArrayList<String> mOppTeamSquad;
+    private ArrayList<String> mOppTeamBowlingStyles;
     public TeamsFragment() {
     }
 
@@ -69,6 +81,14 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
         mTargetTeamSquad = new ArrayList<>();
         for (SchedulePlayer player : mTargetTeam.getSquad()) {
             mTargetTeamSquad.add(player.getName());
+        }
+        mOppTeamSquad = new ArrayList<>();
+        mOppTeamBowlingStyles = new ArrayList<>();
+        for (SchedulePlayer player : mOppTeam.getSquad()) {
+            mOppTeamSquad.add(player.getName());
+            if (!mOppTeamBowlingStyles.contains(player.getBowlingStyle())) {
+                mOppTeamBowlingStyles.add(player.getBowlingStyle());
+            }
         }
     }
 
@@ -364,6 +384,279 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 });
                 break;
             }
+            case Config.TEAM_BOWLING_MOST_WICKETS: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBowlingMostWickets(teamQuery).enqueue(new Callback<BowlingMostWicketsResponse>() {
+                    @Override
+                    public void onResponse(Call<BowlingMostWicketsResponse> call, Response<BowlingMostWicketsResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_WICKETS);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BowlingMostWicketsResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BOWLING_BEST_ECO: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBowlingBestEconomy(teamQuery).enqueue(new Callback<BowlingBestEconomyResponse>() {
+                    @Override
+                    public void onResponse(Call<BowlingBestEconomyResponse> call, Response<BowlingBestEconomyResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_BEST_ECO);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BowlingBestEconomyResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BOWLING_BEST_SR: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBowlingBestStrikeRate(teamQuery).enqueue(new Callback<BowlingBestStrikeRateResponse>() {
+                    @Override
+                    public void onResponse(Call<BowlingBestStrikeRateResponse> call, Response<BowlingBestStrikeRateResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_BEST_SR);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BowlingBestStrikeRateResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BOWLING_MOST_4PLUS_WKTS: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBowlingMost4PlusWickets(teamQuery).enqueue(new Callback<BowlingMost4PlusWicketsResponse>() {
+                    @Override
+                    public void onResponse(Call<BowlingMost4PlusWicketsResponse> call, Response<BowlingMost4PlusWicketsResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_4PLUS_WKTS);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BowlingMost4PlusWicketsResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BOWLING_MOST_5PLUS_WKTS: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBowlingMost5PlusWickets(teamQuery).enqueue(new Callback<BowlingMost5PlusWicketsResponse>() {
+                    @Override
+                    public void onResponse(Call<BowlingMost5PlusWicketsResponse> call, Response<BowlingMost5PlusWicketsResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_5PLUS_WKTS);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BowlingMost5PlusWicketsResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BOWLING_MOST_MAIDENS: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBowlingMostMaidens(teamQuery).enqueue(new Callback<BowlingMostMaidensResponse>() {
+                    @Override
+                    public void onResponse(Call<BowlingMostMaidensResponse> call, Response<BowlingMostMaidensResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_MAIDENS);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BowlingMostMaidensResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BOWLING_BEST_INN_BOWLING: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBowlingBestFiguresInInnings(teamQuery).enqueue(new Callback<BowlingBestBowlingFigureResponse>() {
+                    @Override
+                    public void onResponse(Call<BowlingBestBowlingFigureResponse> call, Response<BowlingBestBowlingFigureResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_BEST_INN_BOWLING);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BowlingBestBowlingFigureResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BOWLING_MOST_RUNS_CONCEDED_INN: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                API.query().getBowlingMostRunsConcededInInnings(teamQuery).enqueue(new Callback<BowlingMostRunsConcededResponse>() {
+                    @Override
+                    public void onResponse(Call<BowlingMostRunsConcededResponse> call, Response<BowlingMostRunsConcededResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_RUNS_CONCEDED_INN);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BowlingMostRunsConcededResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLING_STYLES: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                teamQuery.setSquadExtra(mOppTeamBowlingStyles);
+                API.query().getHeadToHeadRunsVsBowlingStyles(teamQuery).enqueue(new Callback<HeadToHeadRunsVsBowlingStylesResponse>() {
+                    @Override
+                    public void onResponse(Call<HeadToHeadRunsVsBowlingStylesResponse> call, Response<HeadToHeadRunsVsBowlingStylesResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLING_STYLES);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<HeadToHeadRunsVsBowlingStylesResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                teamQuery.setSquad(mTargetTeamSquad);
+                teamQuery.setSquadExtra(mOppTeamSquad);
+                API.query().getHeadToHeadRunsVsBowlers(teamQuery).enqueue(new Callback<HeadToHeadRunsVsBowlersResponse>() {
+                    @Override
+                    public void onResponse(Call<HeadToHeadRunsVsBowlersResponse> call, Response<HeadToHeadRunsVsBowlersResponse> response) {
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS);
+                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                                gson.toJson(response.body().convertToTableRows(
+                                        response.body().getOverallStats())));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction().
+                                replace(R.id.container, fragment).
+                                addToBackStack(null).
+                                commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<HeadToHeadRunsVsBowlersResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+
         }
     }
 }

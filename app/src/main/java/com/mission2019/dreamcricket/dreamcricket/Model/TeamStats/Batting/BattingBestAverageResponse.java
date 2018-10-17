@@ -1,4 +1,4 @@
-package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats;
+package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,32 +9,32 @@ import java.util.ArrayList;
 public class BattingBestAverageResponse {
     @SerializedName("overall")
     @Expose
-    private ArrayList<BestBatAverage> mMostRunsOverall;
+    private ArrayList<BattingBestAverage> mMostRunsOverall;
 
     @SerializedName("atVenue")
     @Expose
-    private ArrayList<BestBatAverage> mMostRunsAtVenue;
+    private ArrayList<BattingBestAverage> mMostRunsAtVenue;
 
-    public ArrayList<BestBatAverage> getMostRunsOverall() {
+    public ArrayList<BattingBestAverage> getMostRunsOverall() {
         return mMostRunsOverall;
     }
 
-    public void setMostRunsOverall(ArrayList<BestBatAverage> mostRunsOverall) {
+    public void setMostRunsOverall(ArrayList<BattingBestAverage> mostRunsOverall) {
         mMostRunsOverall = mostRunsOverall;
     }
 
-    public ArrayList<BestBatAverage> getMostRunsAtVenue() {
+    public ArrayList<BattingBestAverage> getMostRunsAtVenue() {
         return mMostRunsAtVenue;
     }
 
-    public void setMostRunsAtVenue(ArrayList<BestBatAverage> mostRunsAtVenue) {
+    public void setMostRunsAtVenue(ArrayList<BattingBestAverage> mostRunsAtVenue) {
         mMostRunsAtVenue = mostRunsAtVenue;
     }
 
-    public ArrayList<TableRow> convertToTableRows(ArrayList<BestBatAverage> bestBatAverages) {
+    public ArrayList<TableRow> convertToTableRows(ArrayList<BattingBestAverage> bestBatAverages) {
         ArrayList<TableRow> tableRows = new ArrayList<>();
         tableRows.add(new TableRow("Batsman", "I", "R", "B", "Avg"));
-        for (BestBatAverage bestBatAverage: bestBatAverages) {
+        for (BattingBestAverage bestBatAverage: bestBatAverages) {
             tableRows.add(new TableRow(bestBatAverage.getBatsman(), bestBatAverage.getMatches(),
                     bestBatAverage.getRuns(), bestBatAverage.getBalls(),
                     bestBatAverage.getAverage()));

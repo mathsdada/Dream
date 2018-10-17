@@ -1,10 +1,10 @@
-package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats;
+package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-class BestBatStrikeRate {
-    @SerializedName("batsman")
+class BowlingBestStrikeRate {
+    @SerializedName("bowler")
     @Expose
     private String mBatsman;
 
@@ -12,16 +12,14 @@ class BestBatStrikeRate {
     @Expose
     private String mMatches;
 
-    @SerializedName("runs")
+    @SerializedName("wickets")
     @Expose
-    private String mRuns;
+    private String mWickets;
 
-    @SerializedName("balls")
-    @Expose
-    private String mBalls;
+    @SerializedName("economy")
+    private String mEconomy;
 
     @SerializedName("strike_rate")
-    @Expose
     private String mStrikeRate;
 
     public String getBatsman() {
@@ -40,20 +38,20 @@ class BestBatStrikeRate {
         mMatches = matches;
     }
 
-    public String getRuns() {
-        return mRuns;
+    public String getWickets() {
+        return mWickets;
     }
 
-    public void setRuns(String runs) {
-        mRuns = runs;
+    public void setWickets(String wickets) {
+        mWickets = wickets;
     }
 
-    public String getBalls() {
-        return mBalls;
+    public String getEconomy() {
+        return mEconomy;
     }
 
-    public void setBalls(String balls) {
-        mBalls = balls;
+    public void setEconomy(String economy) {
+        mEconomy = economy;
     }
 
     public String getStrikeRate() {

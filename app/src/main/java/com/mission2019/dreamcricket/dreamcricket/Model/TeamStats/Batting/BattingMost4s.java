@@ -1,9 +1,9 @@
-package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats;
+package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-class BattingMost6s {
+class BattingMost4s {
     @SerializedName("batsman")
     @Expose
     private String mBatsman;
@@ -20,9 +20,9 @@ class BattingMost6s {
     @Expose
     private String mBalls;
 
-    @SerializedName("sixes")
+    @SerializedName("fours")
     @Expose
-    private String mSixes;
+    private String mFours;
 
     public String getBatsman() {
         return mBatsman;
@@ -56,11 +56,11 @@ class BattingMost6s {
         mBalls = balls;
     }
 
-    public String getSixes() {
-        return mSixes;
+    public String getFours() {
+        return mFours;
     }
 
-    public void setSixes(String sixes) {
-        mSixes = sixes;
+    public void setFours(String fours) {
+        mFours = fours;
     }
 }

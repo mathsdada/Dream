@@ -1,4 +1,4 @@
-package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats;
+package com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.RecentMatches;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
