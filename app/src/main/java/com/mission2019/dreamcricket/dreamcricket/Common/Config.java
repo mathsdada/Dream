@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class Config {
 //    public static final String API_BASE_URL = "https://young-tor-24482.herokuapp.com/";
-    public static final String API_BASE_URL = "http://192.168.0.104:5000/";
+    public static final String API_BASE_URL = "http://192.168.0.103:5000/";
 //    public static final String API_KEY = "1234567890";
 
     public static final String TEAM_BATTING_FORM = "Recent Match Results";
