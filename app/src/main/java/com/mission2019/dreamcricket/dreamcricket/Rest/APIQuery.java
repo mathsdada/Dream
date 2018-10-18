@@ -20,6 +20,7 @@ import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.Bowling
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMostWicketsResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.HeadToHead.HeadToHeadRunsVsBowlersResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.HeadToHead.HeadToHeadRunsVsBowlingStylesResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.RecentMatches.MatchScoresResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamQuery;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.RecentMatches.TeamFormResponse;
 
@@ -36,6 +37,9 @@ public interface APIQuery {
     // Team Stats
     @POST("team_stats/recent_form")
     Call<TeamFormResponse> getTeamRecentForm(@Body TeamQuery query);
+
+    @POST("/team_stats/recent_match_scores")
+    Call<MatchScoresResponse> getTeamStatsRecentMatchScores(@Body TeamQuery query);
 
     @POST("team_stats/batting/most_runs")
     Call<BattingMostRunsResponse> getTeamStatsBattingMostRuns(@Body TeamQuery query);

@@ -66,8 +66,8 @@ public class MatchActivity extends AppCompatActivity {
                 teamB.toUpperCase());
         /* setup Spinners */
         setUpStatsSelectionSpinner();
-        setUpTeamSelectionSpinner(mMatch.getTeams().get(0).getName(),
-                mMatch.getTeams().get(1).getName());
+        setUpTeamSelectionSpinner(mMatch.getTeams().get(0).getShortName(),
+                mMatch.getTeams().get(1).getShortName());
     }
     private void setUpTeamSelectionSpinner(String firstTeam, final String secondTeam) {
         String[] teams = {firstTeam, secondTeam};

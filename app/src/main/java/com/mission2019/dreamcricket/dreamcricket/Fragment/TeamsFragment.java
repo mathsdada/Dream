@@ -18,6 +18,7 @@ import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
+import com.mission2019.dreamcricket.dreamcricket.Model.TableRow;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestAverageResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestStrikeRateResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost100sResponse;
@@ -109,9 +110,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
     }
 
     @Override
-    public void onCategoryItemClick(int pos) {
-        Toast.makeText(getActivity(), "Getting Stats " + mCategories.get(pos) + " of " +
-                mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+    public void onCategoryItemClick(final int pos) {
         switch (mCategories.get(pos)) {
             case Config.TEAM_BATTING_FORM: {
               TeamQuery teamFormQuery = new TeamQuery(
@@ -119,18 +118,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getTeamRecentForm(teamFormQuery).enqueue(new Callback<TeamFormResponse>() {
                     @Override
                     public void onResponse(Call<TeamFormResponse> call, Response<TeamFormResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_FORM);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_FORM, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -147,18 +141,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                     @Override
                     public void onResponse(Call<BattingMostRunsResponse> call,
                                            Response<BattingMostRunsResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_RUNS);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_MOST_RUNS, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -174,18 +163,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBestBatAverage(teamQuery).enqueue(new Callback<BattingBestAverageResponse>() {
                     @Override
                     public void onResponse(Call<BattingBestAverageResponse> call, Response<BattingBestAverageResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_BEST_AVG);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getMostRunsOverall())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_BEST_AVG, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -201,18 +185,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBestBatStrikeRate(teamQuery).enqueue(new Callback<BattingBestStrikeRateResponse>() {
                     @Override
                     public void onResponse(Call<BattingBestStrikeRateResponse> call, Response<BattingBestStrikeRateResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_BEST_SR);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getMostRunsOverall())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_BEST_SR, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -228,18 +207,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBattingMostDucks(teamQuery).enqueue(new Callback<BattingMostDucksResponse>() {
                     @Override
                     public void onResponse(Call<BattingMostDucksResponse> call, Response<BattingMostDucksResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_DUCKS);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_MOST_DUCKS, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -255,18 +229,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBattingMost50s(teamQuery).enqueue(new Callback<BattingMost50sResponse>() {
                     @Override
                     public void onResponse(Call<BattingMost50sResponse> call, Response<BattingMost50sResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_50s);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_MOST_50s, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -282,18 +251,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBattingMost100s(teamQuery).enqueue(new Callback<BattingMost100sResponse>() {
                     @Override
                     public void onResponse(Call<BattingMost100sResponse> call, Response<BattingMost100sResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_100s);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_MOST_100s, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -309,18 +273,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBattingMost4s(teamQuery).enqueue(new Callback<BattingMost4sResponse>() {
                     @Override
                     public void onResponse(Call<BattingMost4sResponse> call, Response<BattingMost4sResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_4s);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_MOST_4s, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -336,18 +295,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBattingMost6s(teamQuery).enqueue(new Callback<BattingMost6sResponse>() {
                     @Override
                     public void onResponse(Call<BattingMost6sResponse> call, Response<BattingMost6sResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_MOST_6s);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_MOST_6s, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -363,18 +317,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBattingHighScores(teamQuery).enqueue(new Callback<BattingHighScoresResponse>() {
                     @Override
                     public void onResponse(Call<BattingHighScoresResponse> call, Response<BattingHighScoresResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BATTING_HIGH_SCORES);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BATTING_HIGH_SCORES, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -390,18 +339,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBowlingMostWickets(teamQuery).enqueue(new Callback<BowlingMostWicketsResponse>() {
                     @Override
                     public void onResponse(Call<BowlingMostWicketsResponse> call, Response<BowlingMostWicketsResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_WICKETS);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BOWLING_MOST_WICKETS, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -417,18 +361,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBowlingBestEconomy(teamQuery).enqueue(new Callback<BowlingBestEconomyResponse>() {
                     @Override
                     public void onResponse(Call<BowlingBestEconomyResponse> call, Response<BowlingBestEconomyResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_BEST_ECO);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BOWLING_BEST_ECO, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -444,18 +383,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBowlingBestStrikeRate(teamQuery).enqueue(new Callback<BowlingBestStrikeRateResponse>() {
                     @Override
                     public void onResponse(Call<BowlingBestStrikeRateResponse> call, Response<BowlingBestStrikeRateResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_BEST_SR);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BOWLING_BEST_SR, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -471,18 +405,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBowlingMost4PlusWickets(teamQuery).enqueue(new Callback<BowlingMost4PlusWicketsResponse>() {
                     @Override
                     public void onResponse(Call<BowlingMost4PlusWicketsResponse> call, Response<BowlingMost4PlusWicketsResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_4PLUS_WKTS);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BOWLING_MOST_4PLUS_WKTS, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -498,18 +427,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBowlingMost5PlusWickets(teamQuery).enqueue(new Callback<BowlingMost5PlusWicketsResponse>() {
                     @Override
                     public void onResponse(Call<BowlingMost5PlusWicketsResponse> call, Response<BowlingMost5PlusWicketsResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_5PLUS_WKTS);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BOWLING_MOST_5PLUS_WKTS, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -525,18 +449,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBowlingMostMaidens(teamQuery).enqueue(new Callback<BowlingMostMaidensResponse>() {
                     @Override
                     public void onResponse(Call<BowlingMostMaidensResponse> call, Response<BowlingMostMaidensResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_MAIDENS);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BOWLING_MOST_MAIDENS, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -552,18 +471,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBowlingBestFiguresInInnings(teamQuery).enqueue(new Callback<BowlingBestBowlingFigureResponse>() {
                     @Override
                     public void onResponse(Call<BowlingBestBowlingFigureResponse> call, Response<BowlingBestBowlingFigureResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_BEST_INN_BOWLING);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BOWLING_BEST_INN_BOWLING, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -579,18 +493,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getBowlingMostRunsConcededInInnings(teamQuery).enqueue(new Callback<BowlingMostRunsConcededResponse>() {
                     @Override
                     public void onResponse(Call<BowlingMostRunsConcededResponse> call, Response<BowlingMostRunsConcededResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_BOWLING_MOST_RUNS_CONCEDED_INN);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_BOWLING_MOST_RUNS_CONCEDED_INN, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -607,18 +516,13 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
                 API.query().getHeadToHeadRunsVsBowlingStyles(teamQuery).enqueue(new Callback<HeadToHeadRunsVsBowlingStylesResponse>() {
                     @Override
                     public void onResponse(Call<HeadToHeadRunsVsBowlingStylesResponse> call, Response<HeadToHeadRunsVsBowlingStylesResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLING_STYLES);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLING_STYLES, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -631,22 +535,18 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
             case Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS: {
                 TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
                 teamQuery.setSquad(mTargetTeamSquad);
+                teamQuery.setOppTeam(mOppTeam.getName());
                 teamQuery.setSquadExtra(mOppTeamSquad);
                 API.query().getHeadToHeadRunsVsBowlers(teamQuery).enqueue(new Callback<HeadToHeadRunsVsBowlersResponse>() {
                     @Override
                     public void onResponse(Call<HeadToHeadRunsVsBowlersResponse> call, Response<HeadToHeadRunsVsBowlersResponse> response) {
-                        Gson gson = new Gson();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TableFragment.TABLE_TITLE, Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS);
-                        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
-                                gson.toJson(response.body().convertToTableRows(
-                                        response.body().getOverallStats())));
-                        TableFragment fragment = new TableFragment();
-                        fragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().
-                                replace(R.id.container, fragment).
-                                addToBackStack(null).
-                                commit();
+                        if (response.code() != 404) {
+                            StartTableActivity(Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS, response.body().convertToTableRows(
+                                    response.body().getOverallStats()));
+                        } else {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -658,5 +558,19 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
             }
 
         }
+    }
+
+    private void StartTableActivity(String title, ArrayList<TableRow> tableRows) {
+        Gson gson = new Gson();
+        Bundle bundle = new Bundle();
+        bundle.putString(TableFragment.TABLE_TITLE, title);
+        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+                gson.toJson(tableRows));
+        TableFragment fragment = new TableFragment();
+        fragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction().
+                replace(R.id.container, fragment).
+                addToBackStack(null).
+                commit();
     }
 }

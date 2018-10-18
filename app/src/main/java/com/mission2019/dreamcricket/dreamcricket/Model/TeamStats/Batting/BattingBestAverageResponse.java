@@ -9,26 +9,26 @@ import java.util.ArrayList;
 public class BattingBestAverageResponse {
     @SerializedName("overall")
     @Expose
-    private ArrayList<BattingBestAverage> mMostRunsOverall;
+    private ArrayList<BattingBestAverage> mOverallStats;
 
     @SerializedName("atVenue")
     @Expose
-    private ArrayList<BattingBestAverage> mMostRunsAtVenue;
+    private ArrayList<BattingBestAverage> mAtVenueStats;
 
-    public ArrayList<BattingBestAverage> getMostRunsOverall() {
-        return mMostRunsOverall;
+    public ArrayList<BattingBestAverage> getOverallStats() {
+        return mOverallStats;
     }
 
-    public void setMostRunsOverall(ArrayList<BattingBestAverage> mostRunsOverall) {
-        mMostRunsOverall = mostRunsOverall;
+    public void setOverallStats(ArrayList<BattingBestAverage> overallStats) {
+        mOverallStats = overallStats;
     }
 
-    public ArrayList<BattingBestAverage> getMostRunsAtVenue() {
-        return mMostRunsAtVenue;
+    public ArrayList<BattingBestAverage> getAtVenueStats() {
+        return mAtVenueStats;
     }
 
-    public void setMostRunsAtVenue(ArrayList<BattingBestAverage> mostRunsAtVenue) {
-        mMostRunsAtVenue = mostRunsAtVenue;
+    public void setAtVenueStats(ArrayList<BattingBestAverage> atVenueStats) {
+        mAtVenueStats = atVenueStats;
     }
 
     public ArrayList<TableRow> convertToTableRows(ArrayList<BattingBestAverage> bestBatAverages) {
