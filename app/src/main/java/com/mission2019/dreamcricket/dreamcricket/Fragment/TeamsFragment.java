@@ -38,6 +38,7 @@ import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.Bowling
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Bowling.BowlingMostWicketsResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.HeadToHead.HeadToHeadRunsVsBowlersResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.HeadToHead.HeadToHeadRunsVsBowlingStylesResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.RecentMatches.MatchScoresResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.TeamQuery;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.RecentMatches.TeamFormResponse;
 import com.mission2019.dreamcricket.dreamcricket.R;
@@ -129,6 +130,36 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
 
                     @Override
                     public void onFailure(Call<TeamFormResponse> call, Throwable t) {
+
+                    }
+                });
+                break;
+            }
+            case Config.TEAM_BATTING_MATCHES: {
+                TeamQuery teamQuery = new TeamQuery(mTargetTeam.getName(), mVenue, mFormat);
+                API.query().getTeamStatsRecentMatchScores(teamQuery).enqueue(new Callback<MatchScoresResponse>() {
+                    @Override
+                    public void onResponse(Call<MatchScoresResponse> call, Response<MatchScoresResponse> response) {
+                        if (response.code() == 404) {
+                            Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
+                                    mTargetTeam.getName(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Gson gson = new Gson();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(TableFragment.KEY_DATA_TYPE, TableFragment.DATA_TYPE_MATCH_SCORES);
+                        bundle.putString(TableFragment.KEY_TITLE, Config.TEAM_BATTING_MATCHES);
+                        bundle.putString(TableFragment.KEY_OVERALL_STATS, gson.toJson(response.body().getOverallStats()));
+                        TableFragment fragment = new TableFragment();
+                        fragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.container, fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+
+                    @Override
+                    public void onFailure(Call<MatchScoresResponse> call, Throwable t) {
 
                     }
                 });
@@ -563,8 +594,9 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
     private void StartTableActivity(String title, ArrayList<TableRow> tableRows) {
         Gson gson = new Gson();
         Bundle bundle = new Bundle();
-        bundle.putString(TableFragment.TABLE_TITLE, title);
-        bundle.putString(TableFragment.TABLE_DATA_OVERALL,
+        bundle.putString(TableFragment.KEY_DATA_TYPE, TableFragment.DATA_TYPE_TABLE_ROWS);
+        bundle.putString(TableFragment.KEY_TITLE, title);
+        bundle.putString(TableFragment.KEY_OVERALL_STATS,
                 gson.toJson(tableRows));
         TableFragment fragment = new TableFragment();
         fragment.setArguments(bundle);

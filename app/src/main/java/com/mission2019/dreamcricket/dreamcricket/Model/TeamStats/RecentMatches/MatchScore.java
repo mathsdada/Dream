@@ -14,6 +14,10 @@ public class MatchScore {
     @Expose
     private String mMatchDate;
 
+    @SerializedName("match_venue")
+    @Expose
+    private String mMatchVenue;
+
     @SerializedName("match_score")
     @Expose
     private ArrayList<InningsScore> mInningsScores;
@@ -40,5 +44,13 @@ public class MatchScore {
 
     public void setInningsScores(ArrayList<InningsScore> inningsScores) {
         mInningsScores = inningsScores;
+    }
+
+    public String getMatchVenue() {
+        return mMatchVenue;
+    }
+
+    public void setMatchVenue(String matchVenue) {
+        mMatchVenue = matchVenue;
     }
 }
