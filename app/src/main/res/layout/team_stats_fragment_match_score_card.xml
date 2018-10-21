@@ -21,7 +21,7 @@
             android:layout_height="match_parent">
             <TextView
                 android:text="India Won By 10 Runs"
-                android:textColor="@android:color/holo_green_dark"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:id="@+id/match_outcome_tv"
                 android:paddingTop="5dp"

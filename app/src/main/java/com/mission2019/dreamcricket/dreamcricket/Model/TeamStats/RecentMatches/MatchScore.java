@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class MatchScore {
-    @SerializedName("match_outcome")
+    @SerializedName("match_winning_text")
     @Expose
-    private String mMatchOutcome;
+    private String mMatchWinningText;
 
     @SerializedName("match_date")
     @Expose
@@ -22,12 +22,16 @@ public class MatchScore {
     @Expose
     private ArrayList<InningsScore> mInningsScores;
 
-    public String getMatchOutcome() {
-        return mMatchOutcome;
+    @SerializedName("match_outcome")
+    @Expose
+    private String mMatchOutcome;
+
+    public String getMatchWinningText() {
+        return mMatchWinningText;
     }
 
-    public void setMatchOutcome(String matchOutcome) {
-        mMatchOutcome = matchOutcome;
+    public void setMatchWinningText(String matchWinningText) {
+        mMatchWinningText = matchWinningText;
     }
 
     public String getMatchDate() {
@@ -52,5 +56,13 @@ public class MatchScore {
 
     public void setMatchVenue(String matchVenue) {
         mMatchVenue = matchVenue;
+    }
+
+    public String getMatchOutcome() {
+        return mMatchOutcome;
+    }
+
+    public void setMatchOutcome(String matchOutcome) {
+        mMatchOutcome = matchOutcome;
     }
 }

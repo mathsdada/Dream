@@ -1,5 +1,6 @@
 package com.mission2019.dreamcricket.dreamcricket.Adapter;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,7 +55,13 @@ public class MatchScoresRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             mMatchInfoTV = itemView.findViewById(R.id.match_info_tv);
         }
         void bindViews(MatchScore matchScore) {
-            mMatchOutcomeTV.setText(matchScore.getMatchOutcome());
+            mMatchOutcomeTV.setText(matchScore.getMatchWinningText());
+            switch (matchScore.getMatchOutcome()) {
+                case "WIN": mMatchOutcomeTV.setTextColor(Color.parseColor("#43a047")); break;
+                case "LOSS": mMatchOutcomeTV.setTextColor(Color.parseColor("#f4511e")); break;
+                default:break;
+            }
+
             String matchInfo = matchScore.getMatchDate() + " . " +
                     matchScore.getMatchVenue().split(",")[1];
             mMatchInfoTV.setText(matchInfo);
