@@ -43,7 +43,7 @@ public class MatchScoresRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         private TextView mInn2TeamNameTV, mInn2TeamScoreTV;
         private TextView mInn3TeamNameTV, mInn3TeamScoreTV;
         private TextView mInn4TeamNameTV, mInn4TeamScoreTV;
-        private TextView mMatchDateTV, mMatchVenueTV;
+        private TextView mMatchInfoTV;
         MatchCardViewHolder(@NonNull View itemView) {
             super(itemView);
             mMatchOutcomeTV = itemView.findViewById(R.id.match_outcome_tv);
@@ -51,12 +51,13 @@ public class MatchScoresRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             mInn2TeamNameTV = itemView.findViewById(R.id.innings_2_team_name_tv); mInn2TeamScoreTV = itemView.findViewById(R.id.innings_2_score_tv);
             mInn3TeamNameTV = itemView.findViewById(R.id.innings_3_team_name_tv); mInn3TeamScoreTV = itemView.findViewById(R.id.innings_3_score_tv);
             mInn4TeamNameTV = itemView.findViewById(R.id.innings_4_team_name_tv); mInn4TeamScoreTV = itemView.findViewById(R.id.innings_4_score_tv);
-            mMatchDateTV = itemView.findViewById(R.id.match_date_tv); mMatchVenueTV = itemView.findViewById(R.id.match_venue_tv);
+            mMatchInfoTV = itemView.findViewById(R.id.match_info_tv);
         }
         void bindViews(MatchScore matchScore) {
             mMatchOutcomeTV.setText(matchScore.getMatchOutcome());
-            mMatchVenueTV.setText(matchScore.getMatchVenue());
-            mMatchDateTV.setText(matchScore.getMatchDate());
+            String matchInfo = matchScore.getMatchDate() + " . " +
+                    matchScore.getMatchVenue().split(",")[1];
+            mMatchInfoTV.setText(matchInfo);
 
             ArrayList<InningsScore> inningsScores = matchScore.getInningsScores();
             for (int i=0; i<inningsScores.size(); i++) {

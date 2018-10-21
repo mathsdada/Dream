@@ -21,10 +21,11 @@
             android:layout_height="match_parent">
             <TextView
                 android:text="India Won By 10 Runs"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/holo_green_dark"
                 android:gravity="center"
-                android:background="@color/colorPrimary"
                 android:id="@+id/match_outcome_tv"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -37,6 +38,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/match_outcome_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/innings_1_team_name_tv"
@@ -62,6 +64,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/innings_1_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/innings_2_team_name_tv"
@@ -87,6 +90,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/innings_2_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/innings_3_team_name_tv"
@@ -112,6 +116,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/innings_3_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/innings_4_team_name_tv"
@@ -130,33 +135,19 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
-            <LinearLayout
-                android:id="@+id/innings_5_container"
+            <TextView
+                android:id="@+id/match_info_tv"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/innings_4_container"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@color/colorPrimary"
+                android:text="10-10-2010 . Mumbai"
+                android:textColor="#80000000"
+                android:gravity="center"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/match_date_tv"
-                    android:text="10-10-2010"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/match_venue_tv"
-                    android:text="The Lords Cricket Stadium, London"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:layout_weight="2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                android:layout_height="wrap_content" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>
