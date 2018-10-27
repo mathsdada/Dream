@@ -8,6 +8,7 @@ public class Config {
     public static final String API_BASE_URL = "http://192.168.43.8:5000/";
 //    public static final String API_KEY = "1234567890";
 
+    // TEAM STATS
     public static final String TEAM_BATTING_FORM = "Recent Match Results";
     public static final String TEAM_BATTING_MATCHES = "Recent Match Scores";
     public static final String TEAM_BATTING_MOST_RUNS = "Most Runs";
@@ -32,6 +33,15 @@ public class Config {
     public static final String TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLING_STYLES = "Runs Against Bowling Styles";
     public static final String TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS = "Runs Against Opp. Bowlers";
 
+    // PLAYER STATS
+    public static final String PLAYER_BATTING_RECENT_FORM = "Recent Batting Performances";
+    public static final String PLAYER_BATTING_PERF_VS_BOWLING_STYLES = "Batting Performances Against Bowling Styles";
+    public static final String PLAYER_BATTING_PERF_VS_BOWLERS = "Batting Performances Against Bowlers";
+
+    public static final String PLAYER_BOWLING_RECENT_FORM = "Recent Bowling Performances";
+    public static final String PLAYER_BOWLING_PERF_VS_BATTING_STYLES = "Bowling Performances Against Batting Styles";
+    public static final String PLAYER_BOWLING_PERF_VS_BATSMEN = "Bowling Performances Against Batsmen";
+
     public static final ArrayList<String> teamStatsCategories = new ArrayList<>(Arrays.asList(
              "Recent Matches",
                 TEAM_BATTING_FORM , TEAM_BATTING_MATCHES,
@@ -47,4 +57,11 @@ public class Config {
              "Head to Head Records",
                 TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLING_STYLES,
                 TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS));
+
+    public static final ArrayList<String> playerStatsCategories = new ArrayList<>(Arrays.asList(
+            "Batting",
+            PLAYER_BATTING_RECENT_FORM, PLAYER_BATTING_PERF_VS_BOWLING_STYLES, PLAYER_BATTING_PERF_VS_BOWLERS,
+            "Bowling",
+            PLAYER_BOWLING_RECENT_FORM, PLAYER_BOWLING_PERF_VS_BATTING_STYLES, PLAYER_BOWLING_PERF_VS_BATSMEN
+    ));
 }

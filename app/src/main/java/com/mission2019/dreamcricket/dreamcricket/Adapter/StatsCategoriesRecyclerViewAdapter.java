@@ -13,7 +13,7 @@ import com.mission2019.dreamcricket.dreamcricket.R;
 
 import java.util.ArrayList;
 
-public class TeamStatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements StickyHeaderItemDecoration.StickyHeaderInterface{
+public class StatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements StickyHeaderItemDecoration.StickyHeaderInterface{
     private ArrayList<String> mCategories;
     private OnCategoryClickListener mClickListener;
     private static final int ITEM_TYPE_CATEGORY_HEAD = 0;
@@ -23,7 +23,7 @@ public class TeamStatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter
         void onCategoryItemClick(int pos);
     }
 
-    public TeamStatsCategoriesRecyclerViewAdapter(ArrayList<String> categories, OnCategoryClickListener clickListener) {
+    public StatsCategoriesRecyclerViewAdapter(ArrayList<String> categories, OnCategoryClickListener clickListener) {
         mCategories = categories;
         mClickListener = clickListener;
     }

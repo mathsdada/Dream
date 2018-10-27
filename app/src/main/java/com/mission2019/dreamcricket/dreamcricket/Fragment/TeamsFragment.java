@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mission2019.dreamcricket.dreamcricket.Adapter.TeamStatsCategoriesRecyclerViewAdapter;
+import com.mission2019.dreamcricket.dreamcricket.Adapter.StatsCategoriesRecyclerViewAdapter;
 import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
@@ -50,10 +50,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecyclerViewAdapter.OnCategoryClickListener {
+public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerViewAdapter.OnCategoryClickListener {
     private static final String TAG = TeamsFragment.class.getSimpleName();
     private ArrayList<String> mCategories = Config.teamStatsCategories;
-    private TeamStatsCategoriesRecyclerViewAdapter mCategoriesRecyclerViewAdapter;
+    private StatsCategoriesRecyclerViewAdapter mCategoriesRecyclerViewAdapter;
     private RecyclerView mRecyclerView;
 
     private ScheduleTeam mTargetTeam, mOppTeam;
@@ -104,7 +104,7 @@ public class TeamsFragment extends Fragment implements TeamStatsCategoriesRecycl
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = view.findViewById(R.id.recyclerview_team_stats_categories);
-        mCategoriesRecyclerViewAdapter = new TeamStatsCategoriesRecyclerViewAdapter(mCategories, this);
+        mCategoriesRecyclerViewAdapter = new StatsCategoriesRecyclerViewAdapter(mCategories, this);
         mRecyclerView.setAdapter(mCategoriesRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new StickyHeaderItemDecoration(mCategoriesRecyclerViewAdapter));
