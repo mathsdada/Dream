@@ -9,14 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mission2019.dreamcricket.dreamcricket.Activity.MatchActivity;
 import com.mission2019.dreamcricket.dreamcricket.Adapter.PlayerStatsSquadRecyclerViewAdapter;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
-import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleMatch;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
 import com.mission2019.dreamcricket.dreamcricket.R;
@@ -24,8 +22,8 @@ import com.mission2019.dreamcricket.dreamcricket.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PlayersFragment extends Fragment implements PlayerStatsSquadRecyclerViewAdapter.onPlayerClickListener {
-    private static String TAG = PlayersFragment.class.getSimpleName();
+public class TeamSquadFragment extends Fragment implements PlayerStatsSquadRecyclerViewAdapter.onPlayerClickListener {
+    private static String TAG = TeamSquadFragment.class.getSimpleName();
 
     private PlayerStatsSquadRecyclerViewAdapter mPlayerStatsSquadRecyclerViewAdapter;
     private ArrayList<Object> mTargetTeamSquadDataset;
@@ -38,7 +36,7 @@ public class PlayersFragment extends Fragment implements PlayerStatsSquadRecycle
     private ScheduleTeam mTargetTeam, mOppTeam;
     private String mFormat, mVenue;
 
-    public PlayersFragment() {
+    public TeamSquadFragment() {
     }
 
     @Override
@@ -95,6 +93,17 @@ public class PlayersFragment extends Fragment implements PlayerStatsSquadRecycle
 
     @Override
     public void onPlayerClick(int pos) {
+        Bundle bundle = new Bundle();
+        Gson gson = new Gson();
 
+        bundle.putString(PlayerStatsCategoriesFragment.KEY_PLAYER, ((SchedulePlayer)mTargetTeamSquadDataset.get(pos)).getName());
+        bundle.putString(PlayerStatsCategoriesFragment.KEY_FORMAT, mFormat);
+        bundle.putString(PlayerStatsCategoriesFragment.KEY_VENUE, mVenue);
+        bundle.putString(PlayerStatsCategoriesFragment.KEY_TARGET_TEAM, gson.toJson(mTargetTeam));
+        bundle.putString(PlayerStatsCategoriesFragment.KEY_OPP_TEAM, gson.toJson(mOppTeam));
+
+        PlayerStatsCategoriesFragment fragment = new PlayerStatsCategoriesFragment();
+        fragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
     }
 }

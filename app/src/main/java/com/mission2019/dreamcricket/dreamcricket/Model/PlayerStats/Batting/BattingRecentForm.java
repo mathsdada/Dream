@@ -4,9 +4,12 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class BattingRecentForm {
-    @SerializedName("opp_team")
+    @SerializedName("played_for")
+    private String mTeamPf;
+
+    @SerializedName("played_against")
     @Expose
-    private String mOppTeam;
+    private String mTeamPa;
 
     @SerializedName("runs")
     @Expose
@@ -37,12 +40,20 @@ public class BattingRecentForm {
 //    private String mSixes;
 
 
-    public String getOppTeam() {
-        return mOppTeam;
+    public String getTeamPf() {
+        return mTeamPf;
     }
 
-    public void setOppTeam(String oppTeam) {
-        mOppTeam = oppTeam;
+    public void setTeamPf(String teamPf) {
+        mTeamPf = teamPf;
+    }
+
+    public String getTeamPa() {
+        return mTeamPa;
+    }
+
+    public void setTeamPa(String teamPa) {
+        mTeamPa = teamPa;
     }
 
     public String getRuns() {

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class BowlingVsBatsman {
     @SerializedName("batsman")
     @Expose
-    private String mBowler;
+    private String mBatsman;
 
     @SerializedName("innings")
     @Expose
@@ -33,12 +33,12 @@ public class BowlingVsBatsman {
     private String mSixes;
 
 
-    public String getBowler() {
-        return mBowler;
+    public String getBatsman() {
+        return mBatsman;
     }
 
-    public void setBowler(String bowler) {
-        mBowler = bowler;
+    public void setBatsman(String batsman) {
+        mBatsman = batsman;
     }
 
     public String getRuns() {

@@ -1,5 +1,14 @@
 package com.mission2019.dreamcricket.dreamcricket.Rest;
 
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.Batting.BattingRecentForm;
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.Batting.BattingRecentFormResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.Batting.BattingVsBowlerResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.Batting.BattingVsBowlingStylesResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.Bowling.BowlingRecentForm;
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.Bowling.BowlingRecentFormResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.Bowling.BowlingVsBatsmanResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.Bowling.BowlingVsBattingStylesResponse;
+import com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats.PlayerQuery;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestAverageResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestStrikeRateResponse;
@@ -97,4 +106,23 @@ public interface APIQuery {
 
     @POST("/team_stats/head_to_head/runs_against_bowlers")
     Call<HeadToHeadRunsVsBowlersResponse> getHeadToHeadRunsVsBowlers(@Body TeamQuery query);
+
+    // Player Stats
+    @POST("/player_stats/batting/recent_form")
+    Call<BattingRecentFormResponse> getPlayerRecentBattingForm(@Body PlayerQuery query);
+
+    @POST("/player_stats/batting/runs_vs_bowling_styles")
+    Call<BattingVsBowlingStylesResponse> getPlayerBattingVsBowlingStyles(@Body PlayerQuery query);
+
+    @POST("/player_stats/batting/runs_vs_bowlers")
+    Call<BattingVsBowlerResponse> getPlayerBattingVsBowlers(@Body PlayerQuery query);
+
+    @POST("/player_stats/bowling/recent_form")
+    Call<BowlingRecentFormResponse> getPlayerRecentBowlingForm(@Body PlayerQuery query);
+
+    @POST("/player_stats/bowling/wickets_vs_batting_styles")
+    Call<BowlingVsBattingStylesResponse> getPlayerBowlingVsBattingStyles(@Body PlayerQuery query);
+
+    @POST("/player_stats/bowling/wickets_vs_batsmen")
+    Call<BowlingVsBatsmanResponse> getPlayerBowlingVsBatsmen(@Body PlayerQuery query);
 }

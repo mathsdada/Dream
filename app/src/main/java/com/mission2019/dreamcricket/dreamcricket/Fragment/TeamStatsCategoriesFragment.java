@@ -18,7 +18,6 @@ import com.mission2019.dreamcricket.dreamcricket.Common.Config;
 import com.mission2019.dreamcricket.dreamcricket.Custom.StickyHeaderItemDecoration;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.SchedulePlayer;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
-import com.mission2019.dreamcricket.dreamcricket.Model.TableRow;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestAverageResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingBestStrikeRateResponse;
 import com.mission2019.dreamcricket.dreamcricket.Model.TeamStats.Batting.BattingMost100sResponse;
@@ -50,8 +49,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerViewAdapter.OnCategoryClickListener {
-    private static final String TAG = TeamsFragment.class.getSimpleName();
+import static com.mission2019.dreamcricket.dreamcricket.Common.Utility.StartTableActivity;
+
+public class TeamStatsCategoriesFragment extends Fragment implements StatsCategoriesRecyclerViewAdapter.OnCategoryClickListener {
+    private static final String TAG = TeamStatsCategoriesFragment.class.getSimpleName();
     private ArrayList<String> mCategories = Config.teamStatsCategories;
     private StatsCategoriesRecyclerViewAdapter mCategoriesRecyclerViewAdapter;
     private RecyclerView mRecyclerView;
@@ -65,7 +66,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
     private ArrayList<String> mTargetTeamSquad;
     private ArrayList<String> mOppTeamSquad;
     private ArrayList<String> mOppTeamBowlingStyles;
-    public TeamsFragment() {
+    public TeamStatsCategoriesFragment() {
     }
 
     @Override
@@ -97,13 +98,13 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.team_stats_fragment, container, false);
+        return inflater.inflate(R.layout.stats_categories_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = view.findViewById(R.id.recyclerview_team_stats_categories);
+        mRecyclerView = view.findViewById(R.id.recyclerview_stats_categories);
         mCategoriesRecyclerViewAdapter = new StatsCategoriesRecyclerViewAdapter(mCategories, this);
         mRecyclerView.setAdapter(mCategoriesRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -120,7 +121,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<TeamFormResponse> call, Response<TeamFormResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_FORM, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_FORM, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -173,7 +174,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     public void onResponse(Call<BattingMostRunsResponse> call,
                                            Response<BattingMostRunsResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_MOST_RUNS, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_MOST_RUNS, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -195,7 +196,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BattingBestAverageResponse> call, Response<BattingBestAverageResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_BEST_AVG, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_BEST_AVG, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -217,7 +218,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BattingBestStrikeRateResponse> call, Response<BattingBestStrikeRateResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_BEST_SR, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_BEST_SR, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -239,7 +240,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BattingMostDucksResponse> call, Response<BattingMostDucksResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_MOST_DUCKS, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_MOST_DUCKS, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -261,7 +262,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BattingMost50sResponse> call, Response<BattingMost50sResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_MOST_50s, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_MOST_50s, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -283,7 +284,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BattingMost100sResponse> call, Response<BattingMost100sResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_MOST_100s, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_MOST_100s, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -305,7 +306,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BattingMost4sResponse> call, Response<BattingMost4sResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_MOST_4s, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_MOST_4s, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -327,7 +328,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BattingMost6sResponse> call, Response<BattingMost6sResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_MOST_6s, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_MOST_6s, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -349,7 +350,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BattingHighScoresResponse> call, Response<BattingHighScoresResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BATTING_HIGH_SCORES, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BATTING_HIGH_SCORES, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -371,7 +372,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BowlingMostWicketsResponse> call, Response<BowlingMostWicketsResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BOWLING_MOST_WICKETS, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BOWLING_MOST_WICKETS, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -393,7 +394,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BowlingBestEconomyResponse> call, Response<BowlingBestEconomyResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BOWLING_BEST_ECO, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BOWLING_BEST_ECO, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -415,7 +416,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BowlingBestStrikeRateResponse> call, Response<BowlingBestStrikeRateResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BOWLING_BEST_SR, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BOWLING_BEST_SR, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -437,7 +438,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BowlingMost4PlusWicketsResponse> call, Response<BowlingMost4PlusWicketsResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BOWLING_MOST_4PLUS_WKTS, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BOWLING_MOST_4PLUS_WKTS, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -459,7 +460,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BowlingMost5PlusWicketsResponse> call, Response<BowlingMost5PlusWicketsResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BOWLING_MOST_5PLUS_WKTS, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BOWLING_MOST_5PLUS_WKTS, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -481,7 +482,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BowlingMostMaidensResponse> call, Response<BowlingMostMaidensResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BOWLING_MOST_MAIDENS, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BOWLING_MOST_MAIDENS, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -503,7 +504,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BowlingBestBowlingFigureResponse> call, Response<BowlingBestBowlingFigureResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BOWLING_BEST_INN_BOWLING, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BOWLING_BEST_INN_BOWLING, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -525,7 +526,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<BowlingMostRunsConcededResponse> call, Response<BowlingMostRunsConcededResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_BOWLING_MOST_RUNS_CONCEDED_INN, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_BOWLING_MOST_RUNS_CONCEDED_INN, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -548,7 +549,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<HeadToHeadRunsVsBowlingStylesResponse> call, Response<HeadToHeadRunsVsBowlingStylesResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLING_STYLES, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLING_STYLES, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -572,7 +573,7 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
                     @Override
                     public void onResponse(Call<HeadToHeadRunsVsBowlersResponse> call, Response<HeadToHeadRunsVsBowlersResponse> response) {
                         if (response.code() != 404) {
-                            StartTableActivity(Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS, response.body().convertToTableRows(
+                            StartTableActivity(getActivity(), Config.TEAM_HEAD_TO_HEAD_RUNS_AGAINST_BOWLERS, response.body().convertToTableRows(
                                     response.body().getOverallStats()));
                         } else {
                             Toast.makeText(getActivity(), "Stats Not Available : " + mCategories.get(pos) + " of " +
@@ -589,20 +590,5 @@ public class TeamsFragment extends Fragment implements StatsCategoriesRecyclerVi
             }
 
         }
-    }
-
-    private void StartTableActivity(String title, ArrayList<TableRow> tableRows) {
-        Gson gson = new Gson();
-        Bundle bundle = new Bundle();
-        bundle.putString(TableFragment.KEY_DATA_TYPE, TableFragment.DATA_TYPE_TABLE_ROWS);
-        bundle.putString(TableFragment.KEY_TITLE, title);
-        bundle.putString(TableFragment.KEY_OVERALL_STATS,
-                gson.toJson(tableRows));
-        TableFragment fragment = new TableFragment();
-        fragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction().
-                replace(R.id.container, fragment).
-                addToBackStack(null).
-                commit();
     }
 }

@@ -1,40 +1,25 @@
 package com.mission2019.dreamcricket.dreamcricket.Activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mission2019.dreamcricket.dreamcricket.Common.Utility;
-import com.mission2019.dreamcricket.dreamcricket.Custom.CustomViewPager;
-import com.mission2019.dreamcricket.dreamcricket.Fragment.PlayersFragment;
+import com.mission2019.dreamcricket.dreamcricket.Fragment.TeamSquadFragment;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleMatch;
 import com.mission2019.dreamcricket.dreamcricket.Model.Schedule.ScheduleTeam;
 import com.mission2019.dreamcricket.dreamcricket.R;
-import com.mission2019.dreamcricket.dreamcricket.Fragment.TeamsFragment;
-import com.mission2019.dreamcricket.dreamcricket.Fragment.VenueFragment;
+import com.mission2019.dreamcricket.dreamcricket.Fragment.TeamStatsCategoriesFragment;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 public class MatchActivity extends AppCompatActivity {
     private static final String TAG = MatchActivity.class.getSimpleName();
@@ -136,13 +121,13 @@ public class MatchActivity extends AppCompatActivity {
             oppTeam = mMatch.getTeams().get(0);
             targetTeam = mMatch.getTeams().get(1);
         }
-        bundle.putString(TeamsFragment.KEY_TARGET_TEAM, gson.toJson(targetTeam));
-        bundle.putString(TeamsFragment.KEY_OPP_TEAM, gson.toJson(oppTeam));
-        bundle.putString(TeamsFragment.KEY_FORMAT, mMatch.getFormat());
-        bundle.putString(TeamsFragment.KEY_VENUE, mMatch.getVenue());
+        bundle.putString(TeamStatsCategoriesFragment.KEY_TARGET_TEAM, gson.toJson(targetTeam));
+        bundle.putString(TeamStatsCategoriesFragment.KEY_OPP_TEAM, gson.toJson(oppTeam));
+        bundle.putString(TeamStatsCategoriesFragment.KEY_FORMAT, mMatch.getFormat());
+        bundle.putString(TeamStatsCategoriesFragment.KEY_VENUE, mMatch.getVenue());
         switch (statsType) {
             case Utility.TEAM_STATS: {
-                TeamsFragment fragment = new TeamsFragment();
+                TeamStatsCategoriesFragment fragment = new TeamStatsCategoriesFragment();
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().
                         beginTransaction().
@@ -151,7 +136,7 @@ public class MatchActivity extends AppCompatActivity {
                 break;
             }
             case Utility.PLAYER_STATS: {
-                PlayersFragment fragment = new PlayersFragment();
+                TeamSquadFragment fragment = new TeamSquadFragment();
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().
                         beginTransaction().

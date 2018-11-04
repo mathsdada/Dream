@@ -62,6 +62,8 @@ public class StatsCategoriesRecyclerViewAdapter extends RecyclerView.Adapter<Rec
             case "Batting Records":
             case "Bowling Records":
             case "Head to Head Records":
+            case "Batting":
+            case "Bowling":
                 return ITEM_TYPE_CATEGORY_HEAD;
             default:
                 return ITEM_TYPE_CATEGORY;

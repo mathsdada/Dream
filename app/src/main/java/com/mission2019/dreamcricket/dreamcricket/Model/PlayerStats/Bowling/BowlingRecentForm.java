@@ -4,9 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class BowlingRecentForm {
-    @SerializedName("opp_team")
+    @SerializedName("played_for")
     @Expose
-    private String mOppTeam;
+    private String mTeamPf;
+
+    @SerializedName("played_against")
+    @Expose
+    private String mTeamPa;
 
     @SerializedName("wickets")
     @Expose
@@ -37,12 +41,20 @@ public class BowlingRecentForm {
 //    private String mSixes;
 
 
-    public String getOppTeam() {
-        return mOppTeam;
+    public String getTeamPf() {
+        return mTeamPf;
     }
 
-    public void setOppTeam(String oppTeam) {
-        mOppTeam = oppTeam;
+    public void setTeamPf(String teamPf) {
+        mTeamPf = teamPf;
+    }
+
+    public String getTeamPa() {
+        return mTeamPa;
+    }
+
+    public void setTeamPa(String teamPa) {
+        mTeamPa = teamPa;
     }
 
     public String getRuns() {

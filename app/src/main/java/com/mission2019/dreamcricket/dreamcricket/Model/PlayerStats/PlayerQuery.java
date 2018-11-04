@@ -3,6 +3,8 @@ package com.mission2019.dreamcricket.dreamcricket.Model.PlayerStats;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class PlayerQuery {
     @SerializedName("player_name")
     @Expose
@@ -18,7 +20,7 @@ public class PlayerQuery {
 
     @SerializedName("list_1")
     @Expose
-    private String mList1;
+    private ArrayList<String> mList1 = null;
 
     public PlayerQuery(String playerName, String venueName, String format) {
         mPlayerName = playerName;
@@ -50,11 +52,11 @@ public class PlayerQuery {
         mFormat = format;
     }
 
-    public String getList1() {
+    public ArrayList<String> getList1() {
         return mList1;
     }
 
-    public void setList1(String list1) {
+    public void setList1(ArrayList<String> list1) {
         mList1 = list1;
     }
 }
