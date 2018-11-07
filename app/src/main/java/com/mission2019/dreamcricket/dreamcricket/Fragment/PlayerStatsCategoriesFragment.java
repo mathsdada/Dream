@@ -70,6 +70,7 @@ public class PlayerStatsCategoriesFragment extends Fragment implements StatsCate
 
         mOppTeamSquad = new ArrayList<>();
         mOppTeamBowlingStyles = new ArrayList<>();
+        mOppTeamBattingStyles = new ArrayList<>();
         for (SchedulePlayer player : mOppTeam.getSquad()) {
             mOppTeamSquad.add(player.getName());
             if (!mOppTeamBowlingStyles.contains(player.getBowlingStyle())) {

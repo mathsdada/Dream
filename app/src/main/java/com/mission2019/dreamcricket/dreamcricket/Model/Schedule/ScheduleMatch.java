@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class ScheduleMatch {
+    @SerializedName("series_title")
+    @Expose
+    private String mSeriesTitle;
+
     @SerializedName("match_title")
     @Expose
     private String mTitle;
@@ -76,6 +80,14 @@ public class ScheduleMatch {
 
     public void setTeams(ArrayList<ScheduleTeam> teams) {
         mTeams = teams;
+    }
+
+    public String getSeriesTitle() {
+        return mSeriesTitle;
+    }
+
+    public void setSeriesTitle(String seriesTitle) {
+        mSeriesTitle = seriesTitle;
     }
 
     @Override

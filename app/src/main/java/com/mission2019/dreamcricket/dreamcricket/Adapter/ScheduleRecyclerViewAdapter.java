@@ -15,12 +15,10 @@ import com.mission2019.dreamcricket.dreamcricket.Common.Utility;
 import java.util.ArrayList;
 
 public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<Object> mScheduleDataSet;
-    private static final int ITEM_TYPE_SERIES = 0;
-    private static final int ITEM_TYPE_MATCH = 1;
+    private ArrayList<ScheduleMatch> mScheduleDataSet;
     private MatchCardItemClickListener mListener;
 
-    public ScheduleRecyclerViewAdapter(ArrayList<Object> scheduleDataSet, MatchCardItemClickListener listener) {
+    public ScheduleRecyclerViewAdapter(ArrayList<ScheduleMatch> scheduleDataSet, MatchCardItemClickListener listener) {
         this.mScheduleDataSet = scheduleDataSet;
         mListener = listener;
     }
@@ -32,85 +30,43 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == ITEM_TYPE_SERIES) {
-            View seriesView = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_activity_series_card, parent, false);
-            return new SeriesViewHolder(seriesView);
-        } else {
-            View matchView = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_activity_match_card, parent, false);
-            return new MatchViewHolder(matchView);
-        }
+        View matchView = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_activity_match_card, parent, false);
+        return new MatchViewHolder(matchView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        int viewType = getItemViewType(position);
-        if (viewType == ITEM_TYPE_SERIES) {
-            ((SeriesViewHolder)holder).bindViews((String) mScheduleDataSet.get(position));
-        } else {
-            ((MatchViewHolder)holder).bindViews((ScheduleMatch) mScheduleDataSet.get(position));
-        }
+        ((MatchViewHolder)holder).bindViews(mScheduleDataSet.get(position));
     }
     
-    @Override
-    public int getItemViewType(int position) {
-        if(mScheduleDataSet.get(position) instanceof String) {
-            return ITEM_TYPE_SERIES;
-        } else {
-            return ITEM_TYPE_MATCH;
-        }
-    }
-
     @Override
     public int getItemCount() {
         return mScheduleDataSet.size();
     }
 
-    private class SeriesViewHolder extends RecyclerView.ViewHolder {
-        private TextView mSeriesTitleTextView;
-
-        SeriesViewHolder(View seriesView) {
-            super(seriesView);
-            mSeriesTitleTextView = seriesView.findViewById(R.id.series_title_tv);
-        }
-
-        void bindViews(String seriesTitle) {
-            mSeriesTitleTextView.setText(seriesTitle);
-        }
-
-    }
-
     private class MatchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final String TAG = MatchViewHolder.class.getSimpleName();
         private TextView mTeamATextView, mTeamBTextView;
-        private TextView mTitleTextView, mTimeTextView, mFormatTextView;
+        private TextView mTitleTextView, mTimeTextView, mSeriesTextView;
         MatchViewHolder(View matchView) {
             super(matchView);
-            mFormatTextView = matchView.findViewById(R.id.match_format_tv);
             mTeamATextView = matchView.findViewById(R.id.team_one_tv);
             mTeamBTextView = matchView.findViewById(R.id.team_two_tv);
             mTitleTextView = matchView.findViewById(R.id.match_title_tv);
             mTimeTextView = matchView.findViewById(R.id.match_time_tv);
+            mSeriesTextView = matchView.findViewById(R.id.series_title_tv);
             matchView.setOnClickListener(this);
         }
         void bindViews(ScheduleMatch match) {
             String[] venue = match.getVenue().split(",");
             String[] title = match.getTitle().split(",", 2);
-            String match_title = title[title.length-1] + " . " + venue[venue.length-1];
-
-            String format = match.getFormat();
-            String match_format = "";
-            for (int i=0; i<format.length(); i++) {
-                match_format = match_format + format.charAt(i);
-                if (i != format.length()-1) {
-                    match_format = match_format +"\n";
-                }
-            }
-
+            String match_title = match.getFormat() + " . " +
+                    title[title.length-1] + " . " + venue[venue.length-1];
             mTitleTextView.setText(match_title);
             mTimeTextView.setText(Utility.convertEpochTime(match.getTime()));
             mTeamATextView.setText(match.getTeams().get(0).getName());
             mTeamBTextView.setText(match.getTeams().get(1).getName());
-            mFormatTextView.setText(match_format);
+            mSeriesTextView.setText(match.getSeriesTitle());
         }
 
         @Override

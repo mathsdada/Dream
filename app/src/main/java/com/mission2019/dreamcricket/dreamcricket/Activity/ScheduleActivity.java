@@ -38,15 +38,13 @@ public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyc
     private static final String PERSIST_KEY_SCHEDULE_DATE = "PERSIST_KEY_SCHEDULE_DATE";
     private String dateFormat = "dd-MM-yyyy";
     private ScheduleResponse mSchedule;
-    private ArrayList<Object> mScheduleAdapterDataSet;
+    private ArrayList<ScheduleMatch> mScheduleAdapterDataSet;
     private ScheduleRecyclerViewAdapter mScheduleRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         mScheduleAdapterDataSet = new ArrayList<>();
         RecyclerView recyclerViewSchedule = findViewById(R.id.recyclerview_schedule);
@@ -104,28 +102,6 @@ public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyc
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_schedule, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void getSchedule() {
         API.query().getSchedule().enqueue(new Callback<ScheduleResponse>() {
             @Override
@@ -149,11 +125,11 @@ public class ScheduleActivity extends AppCompatActivity implements ScheduleRecyc
         }
         mScheduleAdapterDataSet.clear();
         for (ScheduleSeries series : seriesArrayList) {
-            mScheduleAdapterDataSet.add(series.getTitle());
-            mScheduleAdapterDataSet.addAll(series.getMatches());
+            for (ScheduleMatch match: series.getMatches()) {
+                match.setSeriesTitle(series.getTitle());
+                mScheduleAdapterDataSet.add(match);
+            }
         }
-        /* Add one dummy series at the end */
-        mScheduleAdapterDataSet.add("");
         mScheduleRecyclerViewAdapter.notifyDataSetChanged();
     }
 
